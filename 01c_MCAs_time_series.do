@@ -1,27 +1,6 @@
 *****************************************************************************
 *                       Look at the coding of MCAs over time           		*
-*						Do files written by Kate Lewis						*
 *****************************************************************************
-
-*### housekeeping ###*
-clear all
-capture log close
-capture macro drop _all
-
-**set up filepaths
-global data 
-global dofiles 
-global logfiles 
-global savefiles
-global temp 
-global results 
-
-*check directory
-dir
-
-*log output
-capture log close
-log using "$logfiles\Do_01c_birth_cohort_$S_DATE.log", replace
 
 *get final pupil ids
 use "$savefiles\sub_cohort_all_school_years.dta", clear
