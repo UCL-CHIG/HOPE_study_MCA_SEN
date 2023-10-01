@@ -1,4 +1,5 @@
-*ICD-10 CODES FOR EACH MCM SUBGROUP
+*ICD-10 CODES FOR EACH MCA SUBGROUP
+* 
 
 *cause of death for deaths in infancy
 import delimited "$data\HES_Death_all_data_wide.csv", varnames(1)
@@ -46,7 +47,7 @@ drop if cause_of_death_neonatal_==""	|  cause_of_death_neonatal_=="."
 save "$temp\death_infancy_causes_long.dta", replace
 clear
 
-*### Load hospital data in to identify MCA noses ###*
+*### Load hospital data in to identify MCA diagnoses ###*
 ** keep admissions in the first year of life only
 import delimited "$data\HES_APC_DIAG_combined.csv", varnames(1) // this file contains admissions in long format
 ** admissions before age 1 only
@@ -119,35 +120,8 @@ rename cause_of_death_neonatal_ cause
 *keep relevant variables only
 keep encrypted_hesid opertn dob diag gestat_baby cause birth_adm adm_start adm_end
 order encrypted_hesid dob adm_start adm_end birth_adm opertn diag cause gestat_baby
+
 duplicates drop
-
-/* USING MARIAS DEFINITION INSTEAD: this needs rechecking before use
-********************************************************************************
-*                           ANY MCA - as define in EUROCAT                    	* 
-*					Whole Q-chapter & D215 D821 D1810 P350 P351 P371  			*
-* Excluding Q101 Q102 Q103 Q105 Q135 Q170 Q171 Q172 Q173 Q174 Q179 Q180 Q181 	*
-* Q182 Q183 Q184 Q185 Q186 Q187 Q189 Q261 Q270 Q314 Q320 Q331 Q381 Q382 Q400 	*
-* Q430 Q523 Q525 Q527 Q53 Q627 Q633 Q653 Q654 Q655 Q656 Q662 Q663 Q664 Q665     *
-* Q667 Q668 Q669 Q670 Q671 Q672 Q673 Q674 Q675 Q676 Q677 Q678 Q680 Q683 Q684	*
-* Q685 Q752 Q753 Q760 Q765 Q825 Q833 Q845 Q899									*
-*  				exclusions based on rules Q250 < 37 weeks, Q256 < 37				*
-*  Can't exclude any of the following 5 character ICD10 codes as precision 		*
-*is only up to 4 chars in HES: Q0461 Q0782 Q1880 Q2111 Q2541 Q3850 Q4021 Q4320  *
-* Q4381 Q4382 Q6821 Q6810 Q7400 Q7643 Q7660 Q7662 Q7671 Q8280 					*
-********************************************************************************
-
-gen any_MCA_eurocat=.
-
-foreach var of varlist diag cause{
-replace any_MCA_eurocat=1 if substr(`var',1,1)=="Q" | substr(`var',1,4)=="D215" | substr(`var',1,5)=="D1810" |  substr(`var',1,4)=="P350" |  substr(`var',1,4)=="P351" |  substr(`var',1,4)=="P371" 
-replace any_MCA_eurocat=. if substr(`var',1,3)=="Q53" 
-local any_MCA_eurocat_exclusions Q101 Q102 Q103 Q105 Q135 Q170 Q171 Q172 Q173 Q174 Q179 Q180 Q181 Q182 Q183 Q184 Q185 Q186 Q187 Q189 Q261 Q270 Q314 Q320 Q331 Q381 Q382 Q400 Q430 Q523 Q525 Q527 Q627 Q633 Q653 Q654 Q655 Q656 Q662 Q663 Q664 Q665 Q667 Q668 Q669 Q670 Q671 Q672 Q673 Q674 Q675 Q676 Q677 Q678 Q680 Q683 Q684 Q685 Q752 Q753 Q760 Q765 Q825 Q833 Q845 Q899
-foreach k of local any_MCA_eurocat_exclusions{
-	replace any_MCA_eurocat=. if substr(`var',1,4)=="`k'" 
-}
-replace any_MCA_eurocat=. if (substr(`var',1,4)=="Q250" |  substr(`var',1,4)=="Q256") & gestat_baby<37
-}
-*/
 
 ********************************************************************************
 *                           ANORECTAL MALFORMATIONS                            * 
@@ -296,8 +270,6 @@ gen nerv_microceph=.
 gen nerv_hydroceph=.
 gen nerv_arhine=.
 gen nerv_bifida=.
-gen nerv_hardelid=.
-gen nerv_feudtner=.
 
 foreach var of varlist diag cause{
 local nerv_all Q00 Q01 Q02 Q03 Q04 Q05 Q06 Q07
@@ -329,17 +301,6 @@ replace nerv_arhine=1 if substr(`var',1,4)=="`k'"
 
 *Spina Bifida
 replace nerv_bifida=1 if substr(`var',1,3)=="Q05"
-
-*Nervous system - Hardelid (SAME AS NERV_ALL)
-local nerv_hardelid Q00 Q01 Q02 Q03 Q04 Q05 Q06 Q07
-foreach k of local nerv_hardelid{
-replace nerv_hardelid=1 if substr(`var',1,3)=="`k'"
-}
-*Nervous system - Feudtner (SAME AS NERV_ALL)
-local nerv_feudtner Q00 Q01 Q02 Q03 Q04 Q05 Q06 Q07
-foreach k of local nerv_feudtner{
-replace nerv_feudtner=1 if substr(`var',1,3)=="`k'"
-}
 }
 
 ********************************************************************************
@@ -354,7 +315,6 @@ gen eye_anoph=.
 gen eye_microph=.
 gen eye_cataract=.
 gen eye_glaucoma=.
-gen eye_hardelid=.
 
 foreach var of varlist diag cause{
 *Eye
@@ -385,18 +345,6 @@ replace eye_cataract=1 if substr(`var',1,4)=="Q120"
 *Congenital glaucoma
 replace eye_glaucoma=1 if substr(`var',1,4)=="Q150"
 
-*Eye - Hardelid
-local eye_hardelid Q104 Q107 Q130 Q131 Q132 Q133 Q134 Q138 Q139
-foreach k of local eye_hardelid{
-replace eye_hardelid=1 if substr(`var',1,4)=="`k'"
-}
-local eye_hardelid Q11 Q12 Q14 Q15
-foreach k of local eye_hardelid{
-replace eye_hardelid=1 if substr(`var',1,3)=="`k'"
-}
-*Eye - Feudtner (NONE)
-}
-
 ********************************************************************************
 *							EAR, FACE AND NECK								   *
 *                                 Q16-18                                       *
@@ -406,7 +354,6 @@ replace eye_hardelid=1 if substr(`var',1,3)=="`k'"
 
 gen efn_all=.
 gen efn_anotia=.
-gen efn_hardelid=.
 
 foreach var of varlist diag cause{
 *Ear, face, neck
@@ -417,11 +364,6 @@ replace efn_all=1 if substr(`var',1,4)=="`k'"
 }
 *Anotia
 replace efn_anotia=1 if substr(`var',1,4)=="Q160"
-*Ear, face, neck - Hardelid
-replace efn_hardelid=1 if substr(`var',1,4)=="Q188"
-replace efn_hardelid=1 if substr(`var',1,3)=="Q16"
-*Ear, face, neck - Feudtner (NONE)
-}
 
 ********************************************************************************
 *								  HEART                                        *
@@ -513,18 +455,6 @@ replace heart_anomreturn=1 if substr(`var',1,4)=="Q262"
 replace heart_pda=1 if substr(`var',1,4)=="Q250" & gestat_baby>=37 & gestat_baby!=.
 *Pulmonary Artery Stenosis 
 replace heart_pastenos=1 if substr(`var',1,4)=="Q256" & gestat_baby>=37 & gestat_baby!=.
-*Heart - Feudtner
-local heart_feudtner Q20 Q22 Q23 
-foreach k of local heart_feudtner{
-replace heart_feudtner=1 if substr(`var',1,3)=="`k'"
-}
-local heart_feudtner Q212 Q213 Q214 Q218 Q219 Q240 Q241 Q242 Q243 Q244 Q245 Q248 Q249 Q251 Q252 Q253 Q254 Q255 Q256 Q257 Q258 Q259 Q260 Q262 Q263 Q264 Q265 Q266 Q268 Q269
-foreach k of local heart_feudtner{
-replace heart_feudtner=1 if substr(`var',1,4)=="`k'"
-}
-}
-*Heart - Hardelid (SAME AS HEART_ALL)
-gen heart_hardelid=heart_all 
 
 ********************************************************************************
 *					          RESPIRATORY                                      *
@@ -547,11 +477,6 @@ replace resp_all=1 if substr(`var',1,4)=="`k'"
 replace resp_choanal=1 if substr(`var',1,4)=="Q300"
 
 }
-
-*Respiratory - Hardelid (SAME AS RESP_ALL)
-gen resp_hardelid=resp_all
-*Respiratory - Feudtner (SAME AS RESP_ALL)
-gen resp_feudtner=resp_all
 
 ********************************************************************************
 *							   OROFACIAL                                       *
@@ -582,9 +507,6 @@ replace oro_lip=1 if substr(`var',1,3)=="Q36"
 *Cleft lip and palate
 replace oro_both=1 if substr(`var',1,3)=="Q37"
 }
-*Orofacial - Hardelid (SAME AS ORO_ALL)
-gen oro_hardelid=oro_all
-*Orofacial - Feudtner (NONE)
 
 ********************************************************************************
 *                       	 DIGESTIVE                                         *
@@ -602,8 +524,6 @@ gen dig_hirsch=.
 gen dig_batresia=. 
 gen dig_pancreas=. 
 gen dig_cdh_simple=.
-gen dig_hardelid=.
-gen dig_feudtner=.
 
 foreach var of varlist diag cause{
 *Digestive
@@ -638,26 +558,6 @@ replace dig_pancreas=1 if substr(`var',1,4)=="Q451"
 *Congenital diaphragmatic hernia simple
 replace dig_cdh_simple=1 if substr(`var',1,4)=="Q790"
 
-*Digestive - hardelid
-local dig_hardelid Q39 Q41 Q42 Q45 
-foreach k of local dig_hardelid{
-replace dig_hardelid=1 if substr(`var',1,3)=="`k'"
-}
-local dig_hardelid Q380 Q383 Q384 Q386 Q387 Q388 Q402 Q403 Q408 Q409 Q431 Q433 Q434 Q435 Q436 Q437 Q439 Q440 Q441 Q442 Q443 Q445 Q446 Q447 Q790
-foreach k of local dig_hardelid{
-replace dig_hardelid=1 if substr(`var',1,4)=="`k'"
-}
-*Digestive - feudtner
-local dig_feudtner Q41 Q42 Q45 
-foreach k of local dig_feudtner{
-replace dig_feudtner=1 if substr(`var',1,3)=="`k'"
-}
-local dig_feudtner Q390 Q391 Q392 Q393 Q394 Q431 Q432 Q433 Q434 Q435 Q436 Q437 Q438 Q439 Q440 Q441 Q442 Q443 Q445 Q446 Q447 Q790
-foreach k of local dig_feudtner{
-replace dig_feudtner=1 if substr(`var',1,4)=="`k'"
-}
-}
-
 * add in ARM and CDH (defined, seperately, above) to overall indicator
 replace dig_all=1 if dig_cdh_full==1 | dig_arm_full==1
 
@@ -680,15 +580,10 @@ replace abdo_gastro=1 if substr(`var',1,4)=="Q793"
 replace abdo_omphal=1 if substr(`var',1,4)=="Q792"
 }
 
-*Abdominal wall defects - Hardelid (SAME AS ABDO_ALL)
-gen abdo_hardelid=abdo_all
-*Abdominal wall defects - Feudtner (SAME AS ABDO_ALL)
-gen abdo_feudtner=abdo_all
-
 ********************************************************************************
-*					          URINARY                                          *
-*						    Q60-64 Q794                                        *
-*                     Exclude Q610 Q627 Q633                                   *
+*	  URINARY                                          *
+*	 Q60-64 Q794                                        *
+*         Exclude Q610 Q627 Q633                                   *
 ********************************************************************************
 
 gen urin_all=.
@@ -696,7 +591,6 @@ gen urin_biagenesis=.
 gen urin_hydronephrosis=.
 gen urin_exstrophy=.
 gen urin_prune=.
-gen urin_hardelid=.
 
 foreach var of varlist diag cause{
 *Urinary
@@ -715,15 +609,6 @@ replace urin_hydronephrosis=1 if substr(`var',1,4)=="Q620"
 *Bladder exstrophy
 replace urin_exstrophy=1 if substr(`var',1,4)=="Q640" | substr(`var',1,4)=="Q641"
 replace urin_prune=1 if substr(`var',1,4)== "Q794"
-*Urinary - Hardelid
-replace urin_hardelid=1 if substr(`var',1,3)=="Q64" 
-local urin_all Q601 Q602 Q604 Q605 Q606 Q611 Q612 Q613 Q614 Q615 Q618 Q619 Q620 Q621 Q622 Q623 Q624 Q625 Q626 Q628 Q630 Q631 Q632 Q638 Q639 Q794
-foreach k of local urin_all{
-replace urin_all=1 if substr(`var',1,4)=="`k'"
-}
-}
-*Urinary - Feudtner (SAME AS URIN_ALL)
-gen urin_feudtner=urin_all
 
 ********************************************************************************
 *					            GENITAL                                        *
@@ -735,7 +620,6 @@ gen urin_feudtner=urin_all
 gen genital_all=.
 gen genital_hypospadia=.
 gen genital_indsex=.
-gen genital_hardelid =.
 
 foreach var of varlist diag cause{
 *Genital
@@ -754,17 +638,6 @@ replace genital_hypospadia=1 if substr(`var',1,4)=="`k'"
 }
 *Indeterminate sex
 replace genital_indsex=1 if substr(`var',1,3)=="Q56"
-*Genital - Hardelid
-local genital_hardelid Q51 Q56
-foreach k of local genital_hardelid {
-replace genital_hardelid =1 if substr(`var',1,3)=="`k'"
-}
-local genital_hardelid Q500 Q520 Q521 Q522 Q524 Q540 Q541 Q542 Q543 Q548 Q549 Q550 Q555 
-foreach k of local genital_hardelid {
-replace genital_hardelid=1 if substr(`var',1,4)=="`k'"
-}
-}
-*Genital - Feudtner (NONE)
 
 ********************************************************************************
 *							    	LIMB                                       *
@@ -779,9 +652,7 @@ gen limb_clubfoot=.
 gen limb_hip=.
 gen limb_polydact=.
 gen limb_syndact=.
-gen limb_hardelid=.
-gen limb_feudtner=.
- 
+
 foreach var of varlist diag cause{ 
 *Limb 
 local limb_all Q69 Q70 Q71 Q72 Q73 Q74
@@ -809,18 +680,6 @@ replace limb_hip=1 if substr(`var',1,4)=="`k'"
 replace limb_polydact=1 if substr(`var',1,4)== "Q69"
 *Syndactyl
 replace limb_syndact=1 if substr(`var',1,4)== "Q70"
-*Limb - Hardelid
-local limb_hardelid Q71 Q72 Q73 Q74
-foreach k of local limb_hardelid {
-replace limb_hardelid=1 if substr(`var',1,3)=="`k'"
-}
-local limb_hardelid Q650 Q651 Q652 Q682 
-foreach k of local limb_hardelid {
-replace limb_hardelid=1 if substr(`var',1,4)=="`k'"
-}
-*Limb - Feudtner
-replace limb_feudtner=1 if substr(`var',1,4)== "Q722"
-}
 
 ********************************************************************************
 *								CHROMOSOMAL                                    *
@@ -833,8 +692,6 @@ gen chrom_18=.
 gen chrom_13=.
 gen chrom_turn=.
 gen chrom_kline=.
-gen chrom_hardelid=.
-gen chrom_feudtner=.
 
 foreach var of varlist diag cause{
 *Chromosomal
@@ -862,21 +719,6 @@ replace chrom_turn=1 if substr(`var',1,3)=="Q96"
 local chrom_kline Q980 Q981 Q982 Q983 Q984
 foreach k of local chrom_kline {
 replace chrom_kline=1 if substr(`var',1,4)=="`k'"
-}
-*Chromosomal - Hardelid
-local chrom_hardelid Q90 Q91 Q92 Q93 Q97 Q99
-foreach k of local chrom_hardelid {
-replace chrom_hardelid=1 if substr(`var',1,3)=="`k'"
-}
-*Chromosomal - Feudtner
-local chrom_feudtner Q93 Q97 Q98 
-foreach k of local chrom_feudtner {
-replace chrom_feudtner=1 if substr(`var',1,3)=="`k'"
-}
-local chrom_feudtner Q909 Q913 Q914 Q917 Q928 Q969 Q992 Q998 Q999
-foreach k of local chrom_feudtner {
-replace chrom_feudtner=1 if substr(`var',1,4)=="`k'"
-}
 }
 
 ********************************************************************************
@@ -977,13 +819,6 @@ duplicates drop
 gen dig_intestinal=.
 replace dig_intestinal=1 if (dig_datresia==1 | dig_smatresia==1)
 
-*Make severe cardiac group that excludes mitral valve anomalies
-*This is in case you need it for sensitivity analysis 
-gen heart_nomitral_severe=.
-foreach var of varlist heart_anomreturn heart_aortatresia heart_coarc heart_hypoleft heart_ebstein heart_tricusp heart_pvatresia heart_fallot heart_avsd heart_single heart_transpos heart_doubleout heart_truncus{
-	replace heart_nomitral_severe=1 if `var'==1
-}
-
 *Identify infants who have malformations ONLY within 1 system (i.e. isolated anomalies)
 egen system = rownonmiss(nerv_all eye_all efn_all heart_all resp_all oro_all dig_all abdo_all urin_all genital_all limb_all chrom_all other_all)
 
@@ -992,7 +827,6 @@ foreach k of local group {
 gen iso_`k'=1 if system==1 & `k'_all==1
 	}
 drop system
-
 
 foreach var of varlist dig_arm_full-other_translocal {
 	replace `var'=. if `var'==0
@@ -1003,10 +837,8 @@ gen any_MCA=0
 foreach var of varlist nerv_all eye_all efn_all heart_all resp_all oro_all dig_all abdo_all urin_all genital_all limb_all chrom_all other_all {
 	replace any_MCA=1 if `var'==1 
 		}
-
 count	
-		
-		
+	
 ********************************************************************************
 ** Save finalised cohort
 save "$savefiles\MCA_flags.dta", replace
