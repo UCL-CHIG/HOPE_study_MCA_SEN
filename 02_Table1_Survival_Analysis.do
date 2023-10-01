@@ -1,10 +1,9 @@
 ********************************************************************************
-* CALCULATE SURVIVAL BY ANOMALY TYPE AT START OF KS1, START OF KS2, END OF KS2
+* CALCULATE SURVIVAL BY ANOMALY TYPE AT START OF KS1 (age 5 years), START OF KS2 (age 7 years)
 * ACCOUNT FOR FOLLOW-UP TIME BY CALCULATING KAPLAN MEIER SURVIVOR FUNCTION
 ********************************************************************************
 *Use data file containing all infants born in the study period
 *This includes EVERYONE even if they did not go on to get linked to NPD
-
 
 *### housekeeping ###*
 clear all
@@ -43,20 +42,7 @@ format %td dod_adj
 gen date0=dob
 format %td date0
 
-/*
-**** follow up to Ks1 / Ks2 - no longer using
-*Need to first convert DOB to birth year according to the academic year - NOT calendar year
-gen birthyr_academic=.
-forvalues k = 2(1)13{
-	replace birthyr_academic=(2000+`k') if (dob>=mdy(09,01,(2000+`k')) & dob<=mdy(08,31,(2001+`k')))
-}
-gen academicyr_1_start=mdy(9, 1, (birthyr_academic+6))
-gen academicyr_3_start=mdy(9, 1, (birthyr_academic+8))
-gen time_to_event_ks1=min(dod_adj, academicyr_1_start, study_end) //end of follow up ks1
-replace time_to_event_ks2=min(dod_adj, academicyr_3_start, study_end) //end of follow up ks2
-*/
-
-*** follow up to age 5 and 7 instead
+*** follow up to age 5 and 7 years
 ** event
 gen death=0
 replace death=1 if dod_adj!=. & (dod_adj-date0)<(5*365.25) //follow up for deaths up to start of KS1
