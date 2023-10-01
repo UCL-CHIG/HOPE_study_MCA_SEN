@@ -13,9 +13,9 @@ This work uses the following datasets within ECHILD.
 | 2001/02 to 2013/14  | LEASIS  | Stored by the IFS |  
 | 
 FFT = Fischer Family Trust, LEASIS = Local Education Authority School Information Service, SCDB = the School and College Database (compiled from the School Census and Edubase)
-## Data acess
-## Useful references
-## Authors
+### Data acess
+### Useful references
+### Authors
 Maria Peppa
-Kate Lewis
-## Acknowledgements
+Kate M Lewis
+### Acknowledgements
