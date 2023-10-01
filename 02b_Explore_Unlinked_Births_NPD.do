@@ -2,26 +2,6 @@
 *                          EXPLORE UNLINKED BIRTHS	                        *
 *****************************************************************************
 
-*### housekeeping ###*
-clear all
-capture log close
-capture macro drop _all
-
-**set up filepaths
-global data 
-global dofiles 
-global logfiles 
-global savefiles
-global temp 
-global results 
-
-*check directory
-dir
-
-*log output
-capture log close
-log using "$logfiles\Do_02b_unlinked_births_$S_DATE.log", replace
-
 * Open babytail up including more detail 
 import delimited "$linked_children\HES_APC_Baby_Tail_clean_vars_combined.csv", varnames(1) 
 keep encrypted_hesid matage_baby gestat_baby birweit_baby sex maybe_false_match 
