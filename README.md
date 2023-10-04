@@ -15,7 +15,8 @@ This work uses the following datasets within ECHILD:
 ### Data access
 The ECHILD database is made available for free for approved research based in the UK, via the office for National Statistics (ONS) Secure Research Service. Enquiries to access the ECHILD database can be made by emailing ich.echild@ucl.ac.uk. Researchers will need to be approved and submit a successful application to the ECHILD Data Access Committee and ONS Research Accreditation Panel to access the data, with strict statistical disclosure controls of all outputs of analyses.
 ### Useful references
-
+Ford K, Peppa M, Zylbersztejn A, Curry JI, Gilbert R. Birth prevalence of anorectal malformations in England and 5-year survival: a national birth cohort study. Arch Dis Child. 2022;107: 758. doi:10.1136/archdischild-2021-323474
+Peppa M, De Stavola BL, Loukogeorgakis S, Zylbersztejn A, Gilbert R, De Coppi P. Congenital diaphragmatic hernia subtypes: Comparing birth prevalence, occurrence by maternal age, and mortality in a national birth cohort. Paediatr Perinat Epidemiol. 2022;n/a. doi:10.1111/ppe.12939
 ### Study authors
 Maria Peppa wrote the Stata code, with edits and additions by Kate Lewis. The other study authors were Bianca De Stavola, Pia Hardelid and Ruth Gilbert.
 ### Acknowledgements
