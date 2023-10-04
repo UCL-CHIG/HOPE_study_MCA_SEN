@@ -3,19 +3,20 @@
 Using a national cohort of births in England between 2003 and 2013, we aimed to describe patterns of survival to the start of compulsory education and frequencies of recorded SEN provision across children with and without a broad range of major congenital anomalies identified in hospital and mortality records. Specifically, we estimated: rates of survival up to the age 5 years; the prevalence of recorded SEN provision (of those attending a state-funded school); and differences in the prevalence of recorded SEN provision between children attending state-funded school before and after the 2014 SEN reforms. 
 ### Scripts
 This repository contains X scripts:
-1. Stata code to define asthma/wheeze at ages 2 to 9 years (for use in script 2)
-
-This code was developed using Stata v17
+1.
+2.
+3.
+4.
+### Software
+This code was developed using Stata v17.
 ### Data sources
-This work uses the following datasets within ECHILD. 
+This work uses the following datasets within ECHILD:
 
-| 2001/02 to 2013/14  | School attributes  | SCDB  | FFT SCBD_specification.xlsx | scdb_historic_13.dta | 
-| 2001/02 to 2013/14  | LEASIS  | Stored by the IFS |  
-| 
-FFT = Fischer Family Trust, LEASIS = Local Education Authority School Information Service, SCDB = the School and College Database (compiled from the School Census and Edubase)
-### Data acess
+### Data access
+The ECHILD database is made available for free for approved research based in the UK, via the office for National Statistics (ONS) Secure Research Service. Enquiries to access the ECHILD database can be made by emailing ich.echild@ucl.ac.uk. Researchers will need to be approved and submit a successful application to the ECHILD Data Access Committee and ONS Research Accreditation Panel to access the data, with strict statistical disclosure controls of all outputs of analyses.
 ### Useful references
-### Authors
-Maria Peppa
-Kate M Lewis
+
+### Study authors
+Maria Peppa, Kate M Lewis, Bianca De Stavola, Pia Hardelid, Ruth Gilbert
 ### Acknowledgements
+We gratefully acknowledge all children and families whose de-identified data are used in this research. We thank Ruth Blackburn, Matthew Jay, Vincent Nguyen, Farzan Ramzan and Ania Zylbersztejn for ECHILD database support.
