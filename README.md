@@ -17,7 +17,7 @@ The ECHILD database is made available for free for approved research based in th
 ### Useful references
 
 ### Study authors
-Maria Peppa wrote the Stata code, with edits and additions by Kate Lewis.
-The other study authors were Bianca De Stavola, Pia Hardelid, Ruth Gilbert, on behalf of the [HOPE study](https://www.ucl.ac.uk/child-health/research/population-policy-and-practice-research-and-teaching-department/cenb-clinical-30).
+Maria Peppa wrote the Stata code, with edits and additions by Kate Lewis. The other study authors were Bianca De Stavola, Pia Hardelid and Ruth Gilbert.
 ### Acknowledgements
-We gratefully acknowledge all children and families whose de-identified data are used in this research. We thank Ruth Blackburn, Matthew Jay, Vincent Nguyen, Farzan Ramzan and Ania Zylbersztejn for ECHILD database support.
+We gratefully acknowledge all children and families whose de-identified data are used in this research. This work was carried out as part of the [HOPE study](https://www.ucl.ac.uk/child-health/research/population-policy-and-practice-research-and-teaching-department/cenb-clinical-30). We thank Ruth Blackburn, Matthew Jay, Matthew Lilliman, Vincent Nguyen, Farzan Ramzan and Ania Zylbersztejn for ECHILD database support.
+
