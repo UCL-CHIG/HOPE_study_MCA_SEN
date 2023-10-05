@@ -102,9 +102,9 @@ replace eye_cataract=1 if substr(`var',1,4)=="Q120"
 replace eye_glaucoma=1 if substr(`var',1,4)=="Q150"
 
 ********************************************************************************
-*							EAR, FACE AND NECK								   *
+*			EAR, FACE AND NECK				   *
 *                                 Q16-18                                       *
-*					Excluding Q170-175 Q179 Q180-182 Q184-187 Q189             *
+*	Excluding Q170-175 Q179 Q180-182 Q184-187 Q189             *
 *            Code Q1880 minor but ICD-10 not granular enough to exclude        *
 ********************************************************************************
 
@@ -231,7 +231,6 @@ replace resp_all=1 if substr(`var',1,4)=="`k'"
 }
 *Choanal atresia
 replace resp_choanal=1 if substr(`var',1,4)=="Q300"
-
 }
 
 ********************************************************************************
@@ -265,56 +264,9 @@ replace oro_both=1 if substr(`var',1,3)=="Q37"
 }
 
 ********************************************************************************
-*                       	 DIGESTIVE                                     *
-*                          Q38-45, Q790                                        *
-*                   Exclude Q381-382 Q400-401 Q430 Q444                        *
-*    Codes Q3850 Q4021 Q4320 Q4381 Q4382 minor but ICD-10 not granular enough  *
+*** Anorectal malformations from Ford et al. (2022) ***
 ********************************************************************************
 
-gen dig_all=.
-gen dig_oatresia=.
-gen dig_datresia=.
-gen dig_smatresia=.
-gen dig_anatresia=.
-gen dig_hirsch=.
-gen dig_batresia=. 
-gen dig_pancreas=. 
-gen dig_cdh_simple=.
-
-foreach var of varlist diag cause{
-*Digestive
-local dig_all Q39 Q41 Q42 Q45 
-foreach k of local dig_all{
-replace dig_all=1 if substr(`var',1,3)=="`k'"
-}
-local dig_all Q380 Q383 Q384 Q385 Q386 Q387 Q388 Q402 Q403 Q408 Q409 Q431 Q432 Q433 Q434 Q435 Q436 Q437 Q438 Q439 Q440 Q441 Q442 Q443 Q445 Q446 Q447 Q790
-foreach k of local dig_all{
-replace dig_all=1 if substr(`var',1,4)=="`k'"
-}
-*OA with or with TOF
-replace dig_oatresia=1 if substr(`var',1,4)=="Q390"| substr(`var',1,4)=="Q391"
-*Duodenal atresia
-replace dig_datresia=1 if substr(`var',1,4)=="Q410"
-*Small intestine stenosis
-local dig_smatresia Q411 Q412 Q413 Q414 Q415 Q416 Q417 Q418
-foreach k of local dig_smatresia{
-replace dig_smatresia=1 if substr(`var',1,4)=="`k'"
-}
-*Anorectal atresia
-local dig_anatresia Q420 Q421 Q422 Q423
-foreach k of local dig_anatresia{
-replace dig_anatresia=1 if substr(`var',1,4)=="`k'"
-}
-*Hirschprung
-replace dig_hirsch=1 if substr(`var',1,4)=="Q431"
-*Bile duct atresia
-replace dig_batresia=1 if substr(`var',1,4)=="Q442"
-*Annular pancreas
-replace dig_pancreas=1 if substr(`var',1,4)=="Q451"
-*Congenital diaphragmatic hernia simple
-replace dig_cdh_simple=1 if substr(`var',1,4)=="Q790"
-
-*** ANORECTAL MALFORMATIONS from Ford et al. (2022) ***
 * specific and general diagnoses, operations and cause of death used to define ARM
 *specific diagnoses
 local arm_diag_spec Q420 Q421 Q422 Q423 Q435 Q437 K604 K605 K624 N321 N360 N823 N824 
@@ -366,8 +318,10 @@ replace dig_arm_full=1 if (arm_diag_spec==1| arm_diag_gen==1) & arm_death_gen==1
 replace dig_arm_full=1 if (arm_death_spec==1)
 drop arm_diag_spec arm_op_spec arm_death_spec arm_diag_gen arm_op_gen arm_death_gen
 
-
+********************************************************************************
 *** Congenital diaphragmatic hernia FROM Peppa et al. (2022) ***
+********************************************************************************
+
 * CDH in hospital or mortality records
 gen CDH_diag=1 if substr(diag,1,4)=="Q790"
 gen CDH_death=1 if substr(cause,1,4)=="Q790" 
@@ -440,9 +394,59 @@ bysort encrypted_hesid(CDH_excl): replace dig_cdh_full=. if CDH_excl[1]==1
 
 drop CDH_*
 
+********************************************************************************
+* DIGESTIVE (includes anorectal malformations and congenital diaphragmatic hernia ) *
+*                          Q38-45, Q790                                        *
+*                   Exclude Q381-382 Q400-401 Q430 Q444                        *
+*    Codes Q3850 Q4021 Q4320 Q4381 Q4382 minor but ICD-10 not granular enough  *
+********************************************************************************
+
+gen dig_all=.
+gen dig_oatresia=.
+gen dig_datresia=.
+gen dig_smatresia=.
+gen dig_anatresia=.
+gen dig_hirsch=.
+gen dig_batresia=. 
+gen dig_pancreas=. 
+gen dig_cdh_simple=.
+
+foreach var of varlist diag cause{
+*Digestive
+local dig_all Q39 Q41 Q42 Q45 
+foreach k of local dig_all{
+replace dig_all=1 if substr(`var',1,3)=="`k'"
+}
+local dig_all Q380 Q383 Q384 Q385 Q386 Q387 Q388 Q402 Q403 Q408 Q409 Q431 Q432 Q433 Q434 Q435 Q436 Q437 Q438 Q439 Q440 Q441 Q442 Q443 Q445 Q446 Q447 Q790
+foreach k of local dig_all{
+replace dig_all=1 if substr(`var',1,4)=="`k'"
+}
+*OA with or with TOF
+replace dig_oatresia=1 if substr(`var',1,4)=="Q390"| substr(`var',1,4)=="Q391"
+*Duodenal atresia
+replace dig_datresia=1 if substr(`var',1,4)=="Q410"
+*Small intestine stenosis
+local dig_smatresia Q411 Q412 Q413 Q414 Q415 Q416 Q417 Q418
+foreach k of local dig_smatresia{
+replace dig_smatresia=1 if substr(`var',1,4)=="`k'"
+}
+*Anorectal atresia
+local dig_anatresia Q420 Q421 Q422 Q423
+foreach k of local dig_anatresia{
+replace dig_anatresia=1 if substr(`var',1,4)=="`k'"
+}
+*Hirschprung
+replace dig_hirsch=1 if substr(`var',1,4)=="Q431"
+*Bile duct atresia
+replace dig_batresia=1 if substr(`var',1,4)=="Q442"
+*Annular pancreas
+replace dig_pancreas=1 if substr(`var',1,4)=="Q451"
+*Congenital diaphragmatic hernia simple
+replace dig_cdh_simple=1 if substr(`var',1,4)=="Q790"
 
 * add in ARM and CDH (defined, seperately, above) to overall indicator
 replace dig_all=1 if dig_cdh_full==1 | dig_arm_full==1
+
 
 ********************************************************************************
 *			ABDOMINAL WALL DEFECTS                                 *
@@ -493,6 +497,7 @@ replace urin_hydronephrosis=1 if substr(`var',1,4)=="Q620"
 replace urin_exstrophy=1 if substr(`var',1,4)=="Q640" | substr(`var',1,4)=="Q641"
 replace urin_prune=1 if substr(`var',1,4)== "Q794"
 
+
 ********************************************************************************
 *		 		 GENITAL                                       *
 *				Q50-52 Q54-56                                  *
@@ -523,8 +528,8 @@ replace genital_hypospadia=1 if substr(`var',1,4)=="`k'"
 replace genital_indsex=1 if substr(`var',1,3)=="Q56"
 
 ********************************************************************************
-*							    	LIMB                                       *
-*								   Q65-74                                      *
+*				LIMB                           		       *
+*				Q65-74                                	       *
 *          Exclude Q653-659 Q661-669 Q670-678 Q680 Q683-685                    *
 *     Codes Q6810 Q6821 Q7400 minor but ICD-10 to granular to exclude          *
 ********************************************************************************      
@@ -563,6 +568,7 @@ replace limb_hip=1 if substr(`var',1,4)=="`k'"
 replace limb_polydact=1 if substr(`var',1,4)== "Q69"
 *Syndactyl
 replace limb_syndact=1 if substr(`var',1,4)== "Q70"
+
 
 ********************************************************************************
 *				CHROMOSOMAL                                    *
@@ -603,6 +609,7 @@ local chrom_kline Q980 Q981 Q982 Q983 Q984
 foreach k of local chrom_kline {
 replace chrom_kline=1 if substr(`var',1,4)=="`k'"
 }
+
 
 ********************************************************************************
 *                OTHER MALFORMATIONS NOT IN ABOVE GROUPS                       *
@@ -677,8 +684,9 @@ replace other_translocal=1 if substr(`var',1,4)=="`k'"
 }
 }
 
+
 ********************************************************************************
-** Drop all but first episode showing each MCA
+** Drop all but first episode showing each MCA for each child
 *drop rows that have no anomalies
 gen total_mca_count=0
 foreach var of varlist dig_arm_full-other_translocal {
