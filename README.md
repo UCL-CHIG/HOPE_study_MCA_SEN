@@ -13,6 +13,7 @@ This repository contains 6 scripts:
 4. Set ups the school cohort (linked health-education data)
 5. Estimates the prevalence of recorded SEN provision during years 1 to 6 (*objective 2*)
 6. Estmiates the difference in the prevalence of recorded SEN provision in year 1 before and after the 2014 SEN reforms (*objective 3*)
+
 The datasets and variables used in each script are defined at the top of each do file.
 ## Software
 This code was developed using Stata v17. Analyses was conducted within the Office for National Statistics Secure Research Service (ONS SRS).
