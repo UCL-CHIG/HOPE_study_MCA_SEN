@@ -1,5 +1,5 @@
 *****************************************************************************
-*                          PREPARE FULL BIRTH COHORT                        *
+*                    DO FILE 1. PREPARE FULL BIRTH COHORT                   *
 *****************************************************************************
 
 *### housekeeping ###*
@@ -21,6 +21,10 @@ dir
 *log output
 capture log close
 log using "$logfiles\Do_01_birth_cohort_$S_DATE.log", replace
+
+*****************************************************************************
+*      IMPORT LINKAGE FILE, MORTALITY AND ADMISSIONS DATA                   *
+*****************************************************************************
 
 *Import NPD HES Linkage Spine (One to One)
 import delimited "$data\NPD_HES_Linkage_Spine.csv", varnames(1) 
