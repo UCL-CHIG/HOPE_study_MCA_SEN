@@ -6,13 +6,14 @@ Using a national cohort of births in England between 2003 and 2013, we aimed to 
    Objective 2: the prevalence of recorded SEN provision between years 1 and 6 of those attending a state-funded school  
    Objective 3: differences in the prevalence of recorded SEN provision in year 1 between children attending state-funded school before and after the 2014 SEN reforms  
 ## Scripts
-This repository contains 5 scripts:
+This repository contains 6 scripts:
 1. Sets up the birth cohort 
-2. Defines major congenital anomalies
-3. Survival analaysis (Objective 1)
+2. Defines major congenital anomalies using hospital and mortality records
+3. Survival analaysis (*objective 1*)
 4. Set ups the school cohort (linked health-education data)
-5. Calculated the prevalence of recorded SEN provision and
-The datasets and variables used are defined at the top of each do file
+5. Estimates the prevalence of recorded SEN provision during years 1 to 6 (*objective 2*)
+6. Estmiates the difference in the prevalence of recorded SEN provision in year 1 before and after the 2014 SEN reforms (*objective 3*)
+The datasets and variables used in each script are defined at the top of each do file.
 ## Software
 This code was developed using Stata v17. Analyses was conducted within the Office for National Statistics Secure Research Service (ONS SRS).
 ## Data sources
