@@ -11,13 +11,14 @@ This repository contains X scripts:
 This code was developed using Stata v17. Analyses was conducted within the Office for National Statistics Secure Research Service (ONS SRS).
 ## Data sources
 This work uses the following datasets within [Education and Child Health Insights from Linked Data (ECHILD)](https://www.ucl.ac.uk/child-health/research/population-policy-and-practice-research-and-teaching-department/cenb-clinical-20):  
-| **Dataset** | **Common acronym** | **Data provider** | **Description** |
+| **Dataset** | **Common acronym** | **Data provider** | **Description** | **Additional details** |
 | ------ | ------ | ------| ------ |
-| Hospital episode statistics admitted patient care | HES APC | NHS England |  Episode level data on inpatient and day case discharges from English NHS hospitals and English NHS commissioned activity in the independent sector |
-| National pupil database termly school census | NPD School Census | Department for Education | Pupil level information for studens in state-maintained educational settings in England|
-| National pupil database termly school census | NPD School Census | Department for Education | Pupil level information for studens in state-maintained educational settings in England|
-| National pupil database termly school census | NPD School Census | Department for Education | Pupil level information for studens in state-maintained educational settings in England|
-We also used the 
+| Hospital episode statistics admitted patient care | HES APC | NHS England |  Episode level data on inpatient and day case discharges from English NHS hospitals and English NHS commissioned activity in the independent sector | [NHS England website](https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/hospital-episode-statistics) |
+| National pupil database termly school census | NPD School Census | Department for Education | Pupil level information for studens in state-maintained educational settings in England |
+| National pupil database termly school census | NPD School Census | Department for Education | Pupil level information for studens in state-maintained educational settings in England |
+| Get Information about Schools[^1] | GIAS | Department for Education | Pupil level information for studens in state-maintained educational settings in England |
+| ------ | ------ | ------| ------ |
+[^1]: Opensource GIAS data linked to ECHILD using each school’s unique reference number
 ## Data access
 The ECHILD database is made available for free for approved research based in the UK, via the office for National Statistics (ONS) Secure Research Service. Enquiries to access the ECHILD database can be made by emailing ich.echild@ucl.ac.uk. Researchers will need to be approved and submit a successful application to the ECHILD Data Access Committee and ONS Research Accreditation Panel to access the data, with strict statistical disclosure controls of all outputs of analyses.
 ## Useful references
