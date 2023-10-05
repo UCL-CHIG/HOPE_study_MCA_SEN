@@ -1,6 +1,9 @@
 *****************************************************************************
 *                    DO FILE 1. PREPARE FULL BIRTH COHORT                   *
 *     Uses: 
+*      HES APC records, 
+*      ONS mortality record
+*      
 *
 *****************************************************************************
 
@@ -35,13 +38,8 @@ clear
 *****************************************************************************
 
 *****************************************************************************
-*      IMPORT LINKAGE FILE, MORTALITY AND ADMISSIONS DATA                   *
+*      IMPORT MORTALITY AND ADMISSIONS DATA                   *
 *****************************************************************************
-
-*Import NPD HES Linkage Spine (One to One)
-import delimited "$data\NPD_HES_Linkage_Spine.csv", varnames(1) 
-save "$temp\hes_npd_spine.dta", replace
-clear
 
 *Import death data
 import delimited "$data\HES_Death_Dates.csv", varnames(1)
