@@ -39,7 +39,11 @@ SEN VARIABLES OF INTEREST
 	* Not needed, outside academic years for this project (2010-2019)
 
 ****************************************************************************/
-
+*Import NPD HES Linkage Spine (One to One)
+import delimited "$data\NPD_HES_Linkage_Spine.csv", varnames(1) 
+save "$temp\hes_npd_spine.dta", replace
+clear
+ 
 *### housekeeping ###*
 clear all
 capture log close
