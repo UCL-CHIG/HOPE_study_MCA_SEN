@@ -23,10 +23,13 @@ This work uses the following datasets within [Education and Child Health Insight
 ## Data access
 The ECHILD database is made available for free for approved research based in the UK, via the office for National Statistics (ONS) Secure Research Service. Enquiries to access the ECHILD database can be made by emailing ich.echild@ucl.ac.uk. Researchers will need to be approved and submit a successful application to the ECHILD Data Access Committee and ONS Research Accreditation Panel to access the data, with strict statistical disclosure controls of all outputs of analyses.
 ## Useful references
-* Ford K, Peppa M, Zylbersztejn A, Curry JI, Gilbert R. Birth prevalence of anorectal malformations in England and 5-year survival: a national birth cohort study. Arch Dis Child. 2022;107: 758. doi:10.1136/archdischild-2021-323474.
+* Ford K, Peppa M, Zylbersztejn A, Curry JI, Gilbert R. Birth prevalence of anorectal malformations in England and 5-year survival: a national birth cohort study. Arch Dis Child. 2022;107: 758. doi:10.1136/archdischild-2021-323474
+* Herbert A, Wijlaars L, Zylbersztejn A, Cromwell D, Hardelid P. Data Resource Profile: Hospital Episode Statistics Admitted Patient Care (HES APC). Int J Epidemiol. 2017;46: 1093–1093i. doi:10.1093/ije/dyx015
+* Mc Grath-Lone L, Libuy N, Harron K, Jay MA, Wijlaars L, Etoori D, et al. Data Resource Profile: The Education and Child Health Insights from Linked Data (ECHILD) Database. Int J Epidemiol. 2022;51: 17–17f. doi:10.1093/ije/dyab149
 * Peppa M, De Stavola BL, Loukogeorgakis S, Zylbersztejn A, Gilbert R, De Coppi P. Congenital diaphragmatic hernia subtypes: Comparing birth prevalence, occurrence by maternal age, and mortality in a national birth cohort. Paediatr Perinat Epidemiol. 2022;n/a. doi:10.1111/ppe.12939.
 ## Study authors
 Maria Peppa wrote the Stata code, with edits and additions by Kate Lewis. Additional study authors: Bianca De Stavola, Pia Hardelid and Ruth Gilbert.
 ## Acknowledgements
 We gratefully acknowledge all children and families whose de-identified data are used in this research. This work was carried out as part of the [HOPE study](https://www.ucl.ac.uk/child-health/research/population-policy-and-practice-research-and-teaching-department/cenb-clinical-30). We thank Ruth Blackburn, Matthew Jay, Matthew Lilliman, Vincent Nguyen, Farzan Ramzan, Anthony Stone and Ania Zylbersztejn for ECHILD database support.
-~~ Funding
+## Funding
+MP was funded by the National Institute for Health Research Great Ormond Street Hospital Biomedical Research Centre (NIHR GOSH-BRC). KML was funded by the National Institute for Health Research (NIHR) under its Programme Grants for Applied Research Programme (NIHR202025, The HOPE Study). RG is supported by a NIHR Senior Investigator award. ECHILD is supported by ADR UK (Administrative Data Research UK), an Economic and Social Research Council (part of UK Research and Innovation) programme (ES/V000977/1, ES/X003663/1, ES/X000427/1). The funders had no role in study design, data collection and analysis, decision to publish, or preparation of the manuscript.
