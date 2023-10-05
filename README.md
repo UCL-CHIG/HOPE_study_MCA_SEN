@@ -8,7 +8,7 @@ This repository contains X scripts:
 3.
 4.
 ## Software
-This code was developed using Stata v17.
+This code was developed using Stata v17. Analyses was conducted within the Office for National Statistics Secure Research Service (ONS SRS).
 ## Data sources
 This work uses the following datasets within [Education and Child Health Insights from Linked Data (ECHILD)](https://www.ucl.ac.uk/child-health/research/population-policy-and-practice-research-and-teaching-department/cenb-clinical-20):  
 | **Dataset** | **Common acronym** | **Data provider** | **Description** |
