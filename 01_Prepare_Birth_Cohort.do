@@ -6,7 +6,9 @@
 *See paper: https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0243843 
 *And see accompanying code: https://github.com/UCL-CHIG/HES-birth-cohorts/
 
-/*
+*# DATASETS AND VARIABLES
+
+/* This code uses the following datasets and variables:
 1.	HES APC birth records 
       a.	dob_adm = child’s date of birth admission (defined as ‘admidate’ of birth admission)
       b.	multiple = multiple births as defined in Ania Zylbersztejn et al.
@@ -32,4 +34,4 @@ drop if non_res==1
 
 
 *# SAVE FILE
-save "birth_cohort.dta"
+save "birth_cohort.dta", replace
