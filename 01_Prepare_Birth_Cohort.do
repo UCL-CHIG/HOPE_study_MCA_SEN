@@ -47,7 +47,7 @@ clear
 import delimited "$data\HES_APC_Baby_Tail_clean_vars_combined.csv", varnames(1) 
 *Format birth date
 *keep gestat to help with defining some MCAs
-keep encrypt bday gestat_baby
+keep encrypt bday gestat
 gen dob=date(bday, "YMD")
 format %td dob
 drop bday
@@ -76,12 +76,14 @@ save "$temp\babytail_dates.dta", replace
 clear
 
 *****************************************************************************
-*# DEFINE MCAS FIRST IN SEPERATE DO FILE
+*# DEFINE MCAS IN SEPERATE DO FILE
 *****************************************************************************
 do "$dofiles\01b_Define_MCAs.do"
 clear
 
-*### Flowchart numbers and exclusions###*
+*****************************************************************************
+*# FLOWCHART NUMBERS AND EXCLUSIONS
+*****************************************************************************
 *need to add in residential region
 import delimited "$data\HES_APC_Area_combined.csv", varnames(1)
 * mark records where earliest episode is nonres
