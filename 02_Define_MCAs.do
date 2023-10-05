@@ -742,5 +742,5 @@ foreach var of varlist nerv_all eye_all efn_all heart_all resp_all oro_all dig_a
 count	
 	
 ********************************************************************************
-** Save finalised cohort
-save "$savefiles\MCA_flags.dta", replace
+** Save MCA flags
+save "MCA_flags.dta", replace
