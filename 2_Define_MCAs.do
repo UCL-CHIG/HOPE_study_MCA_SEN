@@ -1,265 +1,21 @@
-*ICD-10 CODES FOR EACH MCA SUBGROUP
-* 
-
-*cause of death for deaths in infancy
-import delimited "$data\HES_Death_all_data_wide.csv", varnames(1)
-keep encrypted_hesid dod_month dod_year age_at_death cause* death_record_used match_rank
-gen dod_day=15 //set death date to mid month; as day not available 
-gen dod=mdy(dod_month, dod_day, dod_year)
-format %td dod
-duplicates drop
-*merge ids and dod in to see which records to keep
-merge m:1 encrypted_hesid dod using "$temp\babytail_dates.dta"
-keep if _merge==3
-*select the best match rank where there are duplicates (1 is best match)
-capture drop death_record
-bysort encrypted_hesid: gen death_record=_N
-tab death_record
-tab match_rank if death_record==2
-replace match_rank=99 if match_rank==0 //match_rank 0 indicates HES record only death
-bysort encrypted_hesid(match_rank): gen death_record_dup=_n
-bysort encrypted_hesid (match_rank): drop if match_rank!=match_rank[_n-1] & death_record_dup==2
-*still some multiple records-looks like many are the same information just needs reformatting
-*get rid of leading zeroes in some cause of deaths
-tostring cause_of_death_neonatal_15 ,replace
-foreach var of varlist cause_of_death cause_of_death_neonatal_1-cause_of_death_neonatal_15 cause_of_death_non_neonatal_1-cause_of_death_non_neonatal_15{
-replace `var'=substr(`var',2,3) if substr(`var',-4,1)=="0"
-replace `var'=substr(`var',2,2) if substr(`var',-3,1)=="0" & substr(`var',-4,1)==""	
-}
-drop death_record_dup death_record_used
-duplicates drop
-drop death_record
-bysort encrypted_hesid: gen death_record=_N
-tab death_record // no more duplicates now
-
-*keeping all death information for now if death is in infancy
-keep if age_at_death==0
-keep encrypted_hesid dod cause_of_death* dob gestat_baby
-*reformat to long to match HES APC noses format
-*need to have common name for cause of death variables
-rename cause_of_death cause_of_death_neonatal_0
-	forvalues k=1/15{ 
-		local a=`k'+15
-	rename cause_of_death_non_neonatal_`k' cause_of_death_neonatal_`a'
-	}
-reshape long cause_of_death_neonatal_, i(encrypted_hesid dod gestat_baby dob) j(cause_death_order)
-drop if cause_of_death_neonatal_==""	|  cause_of_death_neonatal_=="."
-save "$temp\death_infancy_causes_long.dta", replace
-clear
-
-*### Load hospital data in to identify MCA diagnoses ###*
-** keep admissions in the first year of life only
-import delimited "$data\HES_APC_DIAG_combined.csv", varnames(1) // this file contains admissions in long format
-** admissions before age 1 only
-keep if startage>7000 
-
-** keep only children in our cohort
-merge m:1 encrypted_hesid using "$temp\babytail_dates.dta"
-drop if _merge!=3
-drop _merge
-drop epikey
-save "$temp\diag_infancy.dta",replace
-clear
-
-*add in operations in infancy // need  to merge 
-import delimited "$data\HES_APC_Operations_combined.csv", varnames(1)
-drop epikey op_no
-duplicates drop
-*merge ids in to see which records to keep and get dob
-merge m:1 encrypted_hesid using "$temp\babytail_dates.dta"
-keep if _merge==3
-drop _merge
-*change dates to Stata format
-foreach var of varlist epistart epiend opdate{
-gen `var'_2=date(`var',"YMD")	
-format `var'_2 %td	
-}
-*delete episodes after 1st birthday now // no startage in operations file
-drop if (epistart_2-dob)>=365
-sort encrypted_hesid epistart epiend 
-* merge with diagnoses data
-merge m:m encrypted_hesid epistart epiend using "$temp\diag_infancy.dta"
-*change dates to Stata format
-foreach var of varlist epistart epiend opdate{
-capture drop `var'_2
-gen `var'_2=date(`var',"YMD")	
-format `var'_2 %td	
-drop `var'
-rename `var'_2 `var' 
-}
-drop _merge 
-
-drop if (epistart-dob)>=365 & epistart!=.
-
-*# Flag as birth admission if same or <=1 day #
-*First, creating admissions:joining subsequent episodes together to flag full birth admission*
-bysort encrypted_hesid epistart (epiend epiorder): gen adm_end=epiend[_N]
-bysort encrypted_hesid (epistart epiend epiorder): gen adm_start=epistart[_n-1] if adm_end[_n-1]>=epistart & epistart!=epistart[_n-1] 
-bysort encrypted_hesid epistart (adm_start): replace adm_start=adm_start[1]
-replace adm_start=epistart if adm_start==.
-bysort encrypted_hesid adm_start(adm_end): replace adm_end=adm_end[_N] 
-
-*repeat this code until no more changes to admissions
-forvalues k = 1/40 {
-bysort encrypted_hesid (adm_start adm_end): gen adm_start`k'=adm_start[_n-1] if adm_end[_n-1]>=adm_start & adm_start!=adm_start[_n-1] 
-bysort encrypted_hesid adm_start: replace adm_start`k'=adm_start`k'[1]
-replace adm_start=adm_start`k' if adm_start`k'!=.
-bysort encrypted_hesid adm_start(adm_end): replace adm_end=adm_end[_N] 
-drop adm_start`k' 
-}
-
-format adm_start* adm_end %td
-
-*Birth admission flag
-gen birth_adm=1 if adm_start==dob
-
-** append in cause of death information 
-append using "$temp\death_infancy_causes_long.dta"
-rename cause_of_death_neonatal_ cause
-
-*keep relevant variables only
-keep encrypted_hesid opertn dob diag gestat_baby cause birth_adm adm_start adm_end
-order encrypted_hesid dob adm_start adm_end birth_adm opertn diag cause gestat_baby
-
-duplicates drop
+*****************************************************************************
+*               DO FILE 2. DEFINE MCAS USING ICD-10 CODES                   *
+*****************************************************************************
+/*
+This code uses the following datasets:
+- 
+- 
+With the following variables:
+-
+-
+*/
 
 ********************************************************************************
-*                           ANORECTAL MALFORMATIONS                            * 
-*                            from Ford et al. (2022)                           *
-********************************************************************************
-* specific and general diagnoses, operations and cause of death used to define ARM
-*specific diagnoses
-local arm_diag_spec Q420 Q421 Q422 Q423 Q435 Q437 K604 K605 K624 N321 N360 N823 N824 
-gen arm_diag_spec=.
-foreach k of local arm_diag_spec  {
-replace arm_diag_spec=1 if substr(diag,1,4)=="`k'"
-}
-*specific operations
-local arm_op_spec H504 H501 H5042 H5043 H509 N242 N248 N249 M375 M459 M733 P134 P138 P139 P253 P274
-gen arm_op_spec=.
-foreach k of local arm_op_spec {
-replace arm_op_spec=1 if substr(opertn,1,4)=="`k'"
-}
-*specific causes of death
-local arm_death_spec Q420 Q421 Q422 Q423 Q435 Q437 K604 K605 K624 N321 N360 N823 N824
-gen arm_death_spec=.
-foreach k of local arm_death_spec {
-replace arm_death_spec=1 if substr(cause,1,4)=="`k'"
-}
-*general diagnoses
-local arm_diag_gen Q438 Q439
-gen arm_diag_gen=.
-foreach k of local arm_death_gen  {
-replace arm_diag_gen=1 if substr(diag,1,4)=="`k'"
-}
-*specific operations
-local arm_op_gen H568 H151 H152 H158 H159 H321 G742 G743 G748 G749
-gen arm_op_gen=.
-foreach k of local arm_op_gen {
-replace arm_op_gen=1 if substr(opertn,1,4)=="`k'"
-}
-*specific causes of death
-local arm_death_gen Q438 Q439
-gen arm_death_gen=.
-foreach k of local arm_death_gen {
-replace arm_death_gen=1 if substr(cause,1,4)=="`k'"
-}
-*copy results across rows for each child
-foreach var of varlist arm_diag_spec arm_op_spec arm_death_spec arm_diag_gen arm_op_gen arm_death_gen{
-	bysort encrypted_hesid (`var'): replace `var'=`var'[1] 
-}
-*ARM DEFINITION 1: Potential procedure for anorectal malformations alongside evidence from a hospital diagnosis or death certificate 
-gen dig_arm_full=.
-replace dig_arm_full=1 if (arm_diag_spec==1| arm_diag_gen==1) & (arm_op_spec==1|arm_op_gen==1)
-replace dig_arm_full=1 if (arm_op_spec==1|arm_op_gen==1) & (arm_death_spec==1|arm_death_gen==1)
-*ARM DEFINITION 2: Potential hospital diagnosis for anorectal malformations alongside evidence from a death certificate 
-replace dig_arm_full=1 if (arm_diag_spec==1| arm_diag_gen==1) & arm_death_gen==1
-*ARM DEFINITION 3: Death recorded using specific code indicating anorectal malformations 
-replace dig_arm_full=1 if (arm_death_spec==1)
-drop arm_diag_spec arm_op_spec arm_death_spec arm_diag_gen arm_op_gen arm_death_gen
-
-********************************************************************************
-*                     Defining congenital diaphragmatic hernia 					*
-*							FROM Peppa et al. (2022)							*
-********************************************************************************
-* CDH in hospital or mortality records
-gen CDH_diag=1 if substr(diag,1,4)=="Q790"
-gen CDH_death=1 if substr(cause,1,4)=="Q790" 
-*procedures
-local CDH_op G232 G234 G238 G239 T161 T164 T165	
-gen CDH_op=.
-foreach k of local CDH_op{
-replace CDH_op=1 if substr(opertn,1,4)=="`k'"
-}
-*add CDH diag and procedures to all rows within the same admission
-bysort encrypted_hesid adm_start (CDH_diag): replace CDH_diag=1 if CDH_diag[1]==1
-bysort encrypted_hesid adm_start (CDH_op): replace CDH_op=1 if CDH_op[1]==1
-*add death to all rows
-bysort encrypted_hesid (CDH_death): replace CDH_death=1 if CDH_death[1]==1
-**Support for evidence of CDH
-*lung hypoplasia in death or hospital records
-gen CDH_supp=1 if substr(cause,1,4)=="Q336" | substr(diag,1,4)=="Q336" 
-*respiratory distress/pulmonary hypertension that occured in the same admission as CDH repair
-replace CDH_supp=1 if (substr(diag,1,3)=="J96" | substr(diag,1,3)=="P22") & CDH_op==1
-local CDH_supp P282 P284 P285 Z991 R092 R068 I270 I272 P293 P292
-foreach k of local CDH_supp{
-replace CDH_supp=1 if substr(diag,1,4)=="`k'" & CDH_op==1 
-}
-*hypoxia/asphyxia, tracheostomy and invasive ventilation that occured in birth admission AND same admission as CDH repair
-replace CDH_supp=1 if substr(diag,1,3)=="P21" & CDH_op==1 & birth_adm==1
-local CDH_supp P201 P209 Z430 J950 Z930
-foreach k of local CDH_supp{
-replace CDH_supp=1 if substr(diag,1,4)=="`k'" & CDH_op==1 & birth_adm==1
-}
-local CDH_supp E423 E424 E425 E426 E427 E851 X561 X562 X569 X581
-foreach k of local CDH_supp{
-replace CDH_supp=1 if substr(opertn,1,4)=="`k'" & CDH_op==1 & birth_adm==1
-}
-*exclusions
-gen CDH_excl=.
-replace CDH_excl=1 if substr(diag,1,3)=="Q39" | substr(cause,1,3)=="Q39" 
-local CDH_excl Q792 Q793
-foreach k of local CDH_excl {
-replace CDH_excl=1 if substr(diag,1,4)=="`k'" | substr(cause,1,4)=="`k'" 
-}
-*Hiatus hernia only an exclusion if present WITHOUT any of the following:
-* // CDH recorded on the death certificate
-* // diagnosis of lung hypoplasia at any time
-* // an indication of respiratory distress, hypoxia/asphyxia or invasive ventilation in the delivery record OR in any record containing a CDH diagnosis or repair 
-gen CDH_hypop_excl=1 if substr(cause,1,4)=="Q336" | substr(diag,1,4)=="Q336"  
-gen CDH_distress_excl=.
-local CDH_distress P282 P284 P285 Z991 R092 R068 P201 P209 Z430 J950 Z930
-foreach k of local CDH_distress{
-replace CDH_distress_excl=1  if  substr(diag,1,4)=="`k'"  & (birth_adm==1 | CDH_diag | CDH_op)
-}
-local CDH_distress J96 P22 P21
-foreach k of local CDH_distress{
-replace CDH_distress_excl=1  if  substr(diag,1,3)=="`k'"  & (birth_adm==1 | CDH_diag | CDH_op)
-}
-local CDH_distress E423 E424 E425 E426 E427 E851 X561 X562 X569 X581
-foreach k of local CDH_distress{
-replace CDH_distress_excl=1  if  substr(opertn,1,4)=="`k'"  & (birth_adm==1 | CDH_diag | CDH_op)
-}
-*exclusions are at any point
-bysort encrypted_hesid(CDH_hypop_excl):replace CDH_hypop_excl=1 if CDH_hypop_excl[1]==1
-bysort encrypted_hesid(CDH_distress_excl):replace CDH_distress_excl=1 if CDH_distress_excl[1]==1
-
-bysort encrypted_hesid: replace CDH_excl=1 if (substr(diag,1,4)=="Q401" | substr(cause,1,4)=="Q401") & CDH_death!=1 & CDH_hypop_excl!=1 & CDH_distress_excl!=1
-
-*create final indicator 
-gen dig_cdh_full=1 if CDH_diag==1 & CDH_op==1
-replace dig_cdh_full=1 if CDH_death==1
-replace dig_cdh_full=1 if (CDH_diag==1|CDH_op==1) & CDH_supp==1
-bysort encrypted_hesid(CDH_excl): replace dig_cdh_full=. if CDH_excl[1]==1
-
-drop CDH_*
-
-********************************************************************************
-*                             NERVOUS SYSTEM                                   * 
+*                      NERVOUS SYSTEM ANOMALIES                                * 
 *                                 Q00-07                                       *
 *                     No exclusion of any 3-digit codes                        *
 *   Codes Q0461 Q0782 Q0780 minor but ICD-10 not granular enough to exclude    *
-*		Loop whole code once to add outcome by cause of death (and diag)	*
+*	Loop whole code once to add outcome by cause of death (and diag)	*
 ********************************************************************************
 
 gen nerv_all=.
@@ -366,7 +122,7 @@ replace efn_all=1 if substr(`var',1,4)=="`k'"
 replace efn_anotia=1 if substr(`var',1,4)=="Q160"
 
 ********************************************************************************
-*								  HEART                                        *
+*				  HEART                                        *
 *                                Q20-26                                        *
 *      Excluding Q261 & Q246 always, excluding Q250 & Q256 if gestage<37wks    *
 *       Codes Q2111 Q2541 minor but ICD-10 not granular enough to exclude      *
@@ -457,10 +213,10 @@ replace heart_pda=1 if substr(`var',1,4)=="Q250" & gestat_baby>=37 & gestat_baby
 replace heart_pastenos=1 if substr(`var',1,4)=="Q256" & gestat_baby>=37 & gestat_baby!=.
 
 ********************************************************************************
-*					          RESPIRATORY                                      *
+*				RESPIRATORY                                    *
 *                             Q300 Q32-34                                      *
 *                     Exclude  Q320 Q322 Q331 Q336                             *
-*	     Code Q3300 minor but ICD-10 not granular enough to exclude            *
+*	     Code Q3300 minor but ICD-10 not granular enough to exclude        *
 ********************************************************************************
 
 gen resp_all=.
@@ -479,8 +235,8 @@ replace resp_choanal=1 if substr(`var',1,4)=="Q300"
 }
 
 ********************************************************************************
-*							   OROFACIAL                                       *
-*  								Q35-37                                         *
+*				  OROFACIAL                                    *
+*  				Q35-37                                         *
 *                            Exclude Q357                                      *
 ********************************************************************************
 
@@ -509,7 +265,7 @@ replace oro_both=1 if substr(`var',1,3)=="Q37"
 }
 
 ********************************************************************************
-*                       	 DIGESTIVE                                         *
+*                       	 DIGESTIVE                                     *
 *                          Q38-45, Q790                                        *
 *                   Exclude Q381-382 Q400-401 Q430 Q444                        *
 *    Codes Q3850 Q4021 Q4320 Q4381 Q4382 minor but ICD-10 not granular enough  *
@@ -558,13 +314,140 @@ replace dig_pancreas=1 if substr(`var',1,4)=="Q451"
 *Congenital diaphragmatic hernia simple
 replace dig_cdh_simple=1 if substr(`var',1,4)=="Q790"
 
+*** ANORECTAL MALFORMATIONS from Ford et al. (2022) ***
+* specific and general diagnoses, operations and cause of death used to define ARM
+*specific diagnoses
+local arm_diag_spec Q420 Q421 Q422 Q423 Q435 Q437 K604 K605 K624 N321 N360 N823 N824 
+gen arm_diag_spec=.
+foreach k of local arm_diag_spec  {
+replace arm_diag_spec=1 if substr(diag,1,4)=="`k'"
+}
+*specific operations
+local arm_op_spec H504 H501 H5042 H5043 H509 N242 N248 N249 M375 M459 M733 P134 P138 P139 P253 P274
+gen arm_op_spec=.
+foreach k of local arm_op_spec {
+replace arm_op_spec=1 if substr(opertn,1,4)=="`k'"
+}
+*specific causes of death
+local arm_death_spec Q420 Q421 Q422 Q423 Q435 Q437 K604 K605 K624 N321 N360 N823 N824
+gen arm_death_spec=.
+foreach k of local arm_death_spec {
+replace arm_death_spec=1 if substr(cause,1,4)=="`k'"
+}
+*general diagnoses
+local arm_diag_gen Q438 Q439
+gen arm_diag_gen=.
+foreach k of local arm_death_gen  {
+replace arm_diag_gen=1 if substr(diag,1,4)=="`k'"
+}
+*specific operations
+local arm_op_gen H568 H151 H152 H158 H159 H321 G742 G743 G748 G749
+gen arm_op_gen=.
+foreach k of local arm_op_gen {
+replace arm_op_gen=1 if substr(opertn,1,4)=="`k'"
+}
+*specific causes of death
+local arm_death_gen Q438 Q439
+gen arm_death_gen=.
+foreach k of local arm_death_gen {
+replace arm_death_gen=1 if substr(cause,1,4)=="`k'"
+}
+*copy results across rows for each child
+foreach var of varlist arm_diag_spec arm_op_spec arm_death_spec arm_diag_gen arm_op_gen arm_death_gen{
+	bysort encrypted_hesid (`var'): replace `var'=`var'[1] 
+}
+*ARM DEFINITION 1: Potential procedure for anorectal malformations alongside evidence from a hospital diagnosis or death certificate 
+gen dig_arm_full=.
+replace dig_arm_full=1 if (arm_diag_spec==1| arm_diag_gen==1) & (arm_op_spec==1|arm_op_gen==1)
+replace dig_arm_full=1 if (arm_op_spec==1|arm_op_gen==1) & (arm_death_spec==1|arm_death_gen==1)
+*ARM DEFINITION 2: Potential hospital diagnosis for anorectal malformations alongside evidence from a death certificate 
+replace dig_arm_full=1 if (arm_diag_spec==1| arm_diag_gen==1) & arm_death_gen==1
+*ARM DEFINITION 3: Death recorded using specific code indicating anorectal malformations 
+replace dig_arm_full=1 if (arm_death_spec==1)
+drop arm_diag_spec arm_op_spec arm_death_spec arm_diag_gen arm_op_gen arm_death_gen
+
+
+*** Congenital diaphragmatic hernia FROM Peppa et al. (2022) ***
+* CDH in hospital or mortality records
+gen CDH_diag=1 if substr(diag,1,4)=="Q790"
+gen CDH_death=1 if substr(cause,1,4)=="Q790" 
+*procedures
+local CDH_op G232 G234 G238 G239 T161 T164 T165	
+gen CDH_op=.
+foreach k of local CDH_op{
+replace CDH_op=1 if substr(opertn,1,4)=="`k'"
+}
+*add CDH diag and procedures to all rows within the same admission
+bysort encrypted_hesid adm_start (CDH_diag): replace CDH_diag=1 if CDH_diag[1]==1
+bysort encrypted_hesid adm_start (CDH_op): replace CDH_op=1 if CDH_op[1]==1
+*add death to all rows
+bysort encrypted_hesid (CDH_death): replace CDH_death=1 if CDH_death[1]==1
+**Support for evidence of CDH
+*lung hypoplasia in death or hospital records
+gen CDH_supp=1 if substr(cause,1,4)=="Q336" | substr(diag,1,4)=="Q336" 
+*respiratory distress/pulmonary hypertension that occured in the same admission as CDH repair
+replace CDH_supp=1 if (substr(diag,1,3)=="J96" | substr(diag,1,3)=="P22") & CDH_op==1
+local CDH_supp P282 P284 P285 Z991 R092 R068 I270 I272 P293 P292
+foreach k of local CDH_supp{
+replace CDH_supp=1 if substr(diag,1,4)=="`k'" & CDH_op==1 
+}
+*hypoxia/asphyxia, tracheostomy and invasive ventilation that occured in birth admission AND same admission as CDH repair
+replace CDH_supp=1 if substr(diag,1,3)=="P21" & CDH_op==1 & birth_adm==1
+local CDH_supp P201 P209 Z430 J950 Z930
+foreach k of local CDH_supp{
+replace CDH_supp=1 if substr(diag,1,4)=="`k'" & CDH_op==1 & birth_adm==1
+}
+local CDH_supp E423 E424 E425 E426 E427 E851 X561 X562 X569 X581
+foreach k of local CDH_supp{
+replace CDH_supp=1 if substr(opertn,1,4)=="`k'" & CDH_op==1 & birth_adm==1
+}
+*exclusions
+gen CDH_excl=.
+replace CDH_excl=1 if substr(diag,1,3)=="Q39" | substr(cause,1,3)=="Q39" 
+local CDH_excl Q792 Q793
+foreach k of local CDH_excl {
+replace CDH_excl=1 if substr(diag,1,4)=="`k'" | substr(cause,1,4)=="`k'" 
+}
+*Hiatus hernia only an exclusion if present WITHOUT any of the following:
+* // CDH recorded on the death certificate
+* // diagnosis of lung hypoplasia at any time
+* // an indication of respiratory distress, hypoxia/asphyxia or invasive ventilation in the delivery record OR in any record containing a CDH diagnosis or repair 
+gen CDH_hypop_excl=1 if substr(cause,1,4)=="Q336" | substr(diag,1,4)=="Q336"  
+gen CDH_distress_excl=.
+local CDH_distress P282 P284 P285 Z991 R092 R068 P201 P209 Z430 J950 Z930
+foreach k of local CDH_distress{
+replace CDH_distress_excl=1  if  substr(diag,1,4)=="`k'"  & (birth_adm==1 | CDH_diag | CDH_op)
+}
+local CDH_distress J96 P22 P21
+foreach k of local CDH_distress{
+replace CDH_distress_excl=1  if  substr(diag,1,3)=="`k'"  & (birth_adm==1 | CDH_diag | CDH_op)
+}
+local CDH_distress E423 E424 E425 E426 E427 E851 X561 X562 X569 X581
+foreach k of local CDH_distress{
+replace CDH_distress_excl=1  if  substr(opertn,1,4)=="`k'"  & (birth_adm==1 | CDH_diag | CDH_op)
+}
+*exclusions are at any point
+bysort encrypted_hesid(CDH_hypop_excl):replace CDH_hypop_excl=1 if CDH_hypop_excl[1]==1
+bysort encrypted_hesid(CDH_distress_excl):replace CDH_distress_excl=1 if CDH_distress_excl[1]==1
+
+bysort encrypted_hesid: replace CDH_excl=1 if (substr(diag,1,4)=="Q401" | substr(cause,1,4)=="Q401") & CDH_death!=1 & CDH_hypop_excl!=1 & CDH_distress_excl!=1
+
+*create final indicator 
+gen dig_cdh_full=1 if CDH_diag==1 & CDH_op==1
+replace dig_cdh_full=1 if CDH_death==1
+replace dig_cdh_full=1 if (CDH_diag==1|CDH_op==1) & CDH_supp==1
+bysort encrypted_hesid(CDH_excl): replace dig_cdh_full=. if CDH_excl[1]==1
+
+drop CDH_*
+
+
 * add in ARM and CDH (defined, seperately, above) to overall indicator
 replace dig_all=1 if dig_cdh_full==1 | dig_arm_full==1
 
 ********************************************************************************
-*				     	ABDOMINAL WALL DEFECTS                                 *
+*			ABDOMINAL WALL DEFECTS                                 *
 *                           Q792 Q793 Q795                                     *
-*						 No 3-digit exclusions                                 *
+*			 No 3-digit exclusions                                 *
 ********************************************************************************
 
 gen abdo_all=.
@@ -581,9 +464,9 @@ replace abdo_omphal=1 if substr(`var',1,4)=="Q792"
 }
 
 ********************************************************************************
-*	  URINARY                                          *
-*	 Q60-64 Q794                                        *
-*         Exclude Q610 Q627 Q633                                   *
+*	  			URINARY                                        *
+*				Q60-64 Q794                                    *
+*        		 Exclude Q610 Q627 Q633                                *
 ********************************************************************************
 
 gen urin_all=.
@@ -611,9 +494,9 @@ replace urin_exstrophy=1 if substr(`var',1,4)=="Q640" | substr(`var',1,4)=="Q641
 replace urin_prune=1 if substr(`var',1,4)== "Q794"
 
 ********************************************************************************
-*					            GENITAL                                        *
-*							Q50-52 Q54-56                                      *
-*					Exclude Q501-502 Q505 Q523 Q525 Q527 Q544                  *
+*		 		 GENITAL                                       *
+*				Q50-52 Q54-56                                  *
+*		Exclude Q501-502 Q505 Q523 Q525 Q527 Q544                	*
 *Codes Q5010 Q5011 Q5520 Q5521 minor but ICD-10 not granular enough to exclude *
 ********************************************************************************
 
@@ -682,7 +565,7 @@ replace limb_polydact=1 if substr(`var',1,4)== "Q69"
 replace limb_syndact=1 if substr(`var',1,4)== "Q70"
 
 ********************************************************************************
-*								CHROMOSOMAL                                    *
+*				CHROMOSOMAL                                    *
 *                              Q90-93 Q96-99                                   *
 ********************************************************************************
 
