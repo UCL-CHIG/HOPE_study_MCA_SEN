@@ -2,17 +2,17 @@
 ## Aim and objectives of this study
 Using a national cohort of births in England between 2003 and 2013, we aimed to describe patterns of survival to the start of compulsory education and frequencies of recorded SEN provision across children with and without a broad range of major congenital anomalies (MCAs) identified in hospital and mortality records.
 
-   Objective 1: To estimate rates of survival up to the age of 5 and 7 years for children with and without a range of MCAs
+   Objective 1: To estimate rates of survival up to the age of 5 and 7 years for children with and without a range of MCAs  
    Objective 2: To estimate the prevalence of recorded SEN provision between years 1 and 6 for children with and without a range of MCAs  
    Objective 3: To estimate the difference in the prevalence of recorded SEN provision in year 1 between children before and after the 2014 SEN reforms for children with and without a range of MCAs
 ## Scripts
 This repository contains 6 Stata scripts (do files):
-1. Sets up the birth cohort 
-2. Defines major congenital anomalies using hospital and mortality records
-3. Survival analaysis (*objective 1*)
-4. Set ups the school cohort (linked health-education data)
-5. Estimates the prevalence of recorded SEN provision during years 1 to 6 (*objective 2*)
-6. Estimates the difference in the prevalence of recorded SEN provision in year 1 before and after the 2014 SEN reforms (*objective 3*)
+01_Prepare_birth_cohort
+02_Define_MCAs
+03_Survival_analysis (*objective 1*)
+04_Prepare_school_cohort
+05_SEN_provision_prevalence (*objective 2*)
+06_SEN_reform_difference (*objective 3*)
 
 The datasets and variables used are defined at the top of each script.
 ## Software
