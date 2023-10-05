@@ -741,7 +741,7 @@ foreach var of varlist nerv_all eye_all efn_all heart_all resp_all oro_all dig_a
 	replace any_MCA=1 if `var'==1 
 		}
 count	
-	
+
 ********************************************************************************
-** Save MCA flags
+*# SAVE FILE
 save "MCA_flags.dta", replace
