@@ -10,6 +10,7 @@ With the following variables:
 -
 */
 
+
 ********************************************************************************
 *                      NERVOUS SYSTEM ANOMALIES                                * 
 *                                 Q00-07                                       *
@@ -59,6 +60,7 @@ replace nerv_arhine=1 if substr(`var',1,4)=="`k'"
 replace nerv_bifida=1 if substr(`var',1,3)=="Q05"
 }
 
+
 ********************************************************************************
 *                                  EYE                                         *
 *                                Q10-15                                        *
@@ -101,6 +103,7 @@ replace eye_cataract=1 if substr(`var',1,4)=="Q120"
 *Congenital glaucoma
 replace eye_glaucoma=1 if substr(`var',1,4)=="Q150"
 
+
 ********************************************************************************
 *			EAR, FACE AND NECK				   *
 *                                 Q16-18                                       *
@@ -120,6 +123,7 @@ replace efn_all=1 if substr(`var',1,4)=="`k'"
 }
 *Anotia
 replace efn_anotia=1 if substr(`var',1,4)=="Q160"
+
 
 ********************************************************************************
 *				  HEART                                        *
@@ -212,6 +216,7 @@ replace heart_pda=1 if substr(`var',1,4)=="Q250" & gestat_baby>=37 & gestat_baby
 *Pulmonary Artery Stenosis 
 replace heart_pastenos=1 if substr(`var',1,4)=="Q256" & gestat_baby>=37 & gestat_baby!=.
 
+
 ********************************************************************************
 *				RESPIRATORY                                    *
 *                             Q300 Q32-34                                      *
@@ -232,6 +237,7 @@ replace resp_all=1 if substr(`var',1,4)=="`k'"
 *Choanal atresia
 replace resp_choanal=1 if substr(`var',1,4)=="Q300"
 }
+
 
 ********************************************************************************
 *				  OROFACIAL                                    *
@@ -262,6 +268,7 @@ replace oro_lip=1 if substr(`var',1,3)=="Q36"
 *Cleft lip and palate
 replace oro_both=1 if substr(`var',1,3)=="Q37"
 }
+
 
 ********************************************************************************
 *** Anorectal malformations from Ford et al. (2022) ***
@@ -317,6 +324,7 @@ replace dig_arm_full=1 if (arm_diag_spec==1| arm_diag_gen==1) & arm_death_gen==1
 *ARM DEFINITION 3: Death recorded using specific code indicating anorectal malformations 
 replace dig_arm_full=1 if (arm_death_spec==1)
 drop arm_diag_spec arm_op_spec arm_death_spec arm_diag_gen arm_op_gen arm_death_gen
+
 
 ********************************************************************************
 *** Congenital diaphragmatic hernia FROM Peppa et al. (2022) ***
@@ -394,6 +402,7 @@ bysort encrypted_hesid(CDH_excl): replace dig_cdh_full=. if CDH_excl[1]==1
 
 drop CDH_*
 
+
 ********************************************************************************
 * DIGESTIVE (includes anorectal malformations and congenital diaphragmatic hernia ) *
 *                          Q38-45, Q790                                        *
@@ -467,6 +476,7 @@ replace abdo_gastro=1 if substr(`var',1,4)=="Q793"
 replace abdo_omphal=1 if substr(`var',1,4)=="Q792"
 }
 
+
 ********************************************************************************
 *	  			URINARY                                        *
 *				Q60-64 Q794                                    *
@@ -526,6 +536,7 @@ replace genital_hypospadia=1 if substr(`var',1,4)=="`k'"
 }
 *Indeterminate sex
 replace genital_indsex=1 if substr(`var',1,3)=="Q56"
+
 
 ********************************************************************************
 *				LIMB                           		       *
