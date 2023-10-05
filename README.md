@@ -10,7 +10,7 @@ This repository contains X scripts:
 ## Software
 This code was developed using Stata v17.
 ## Data sources
-This work uses the following datasets within ECHILD:
+This work uses the following datasets within Education and Child Health Insights from Linked Data ([ECHILD])(https://www.ucl.ac.uk/child-health/research/population-policy-and-practice-research-and-teaching-department/cenb-clinical-20):
 
 ## Data access
 The ECHILD database is made available for free for approved research based in the UK, via the office for National Statistics (ONS) Secure Research Service. Enquiries to access the ECHILD database can be made by emailing ich.echild@ucl.ac.uk. Researchers will need to be approved and submit a successful application to the ECHILD Data Access Committee and ONS Research Accreditation Panel to access the data, with strict statistical disclosure controls of all outputs of analyses.
