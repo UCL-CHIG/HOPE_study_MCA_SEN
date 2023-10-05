@@ -11,7 +11,8 @@ This repository contains X scripts:
 This code was developed using Stata v17.
 ## Data sources
 This work uses the following datasets within [Education and Child Health Insights from Linked Data (ECHILD)](https://www.ucl.ac.uk/child-health/research/population-policy-and-practice-research-and-teaching-department/cenb-clinical-20)
-| Dataset | Common acronym | Data provider | Description |
+| **Dataset** | **Common acronym** | **Data provider** | **Description** |
+| --- | --- | ---|
 | Hospital episode statistics admitted patient care | HES APC | NHS England |  Episode level data on inpatient and day case discharges from English NHS hospitals and English NHS commissioned activity in the independent sector |
 
 
