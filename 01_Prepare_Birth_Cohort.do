@@ -29,7 +29,7 @@ clear
 
 *Import death data
 import delimited "$data\HES_Death_Dates.csv", varnames(1)
-keep encrypt dod_month dod_year
+keep encrypted_hesid dod_month dod_year
 gen dod_day=15
 gen dod=mdy(dod_month, dod_day, dod_year)
 format %td dod
