@@ -1,15 +1,17 @@
 # School-recorded special educational needs provision in children with major congenital anomalies: a linked administrative records study of births in England, 2003-2013
 ## Aim of this study
-Using a national cohort of births in England between 2003 and 2013, we aimed to describe patterns of survival to the start of compulsory education and frequencies of recorded SEN provision across children with and without a broad range of major congenital anomalies identified in hospital and mortality records. Specifically, we estimated: 
-* rates of survival up to the age 5 and 7 years
+Using a national cohort of births in England between 2003 and 2013, we aimed to describe patterns of survival to the start of compulsory education and frequencies of recorded SEN provision across children with and without a broad range of major congenital anomalies identified in hospital and mortality records. 
+Obective 1. rates of survival up to the age 5 and 7 years
 * the prevalence of recorded SEN provision between years 1 and 6 of those attending a state-funded school
 * differences in the prevalence of recorded SEN provision in year 1 between children attending state-funded school before and after the 2014 SEN reforms 
 ## Scripts
-This repository contains X scripts:
-1. 
-2.
-3.
-4.
+This repository contains 5 scripts:
+1. Sets up the birth cohort 
+2. Defines major congenital anomalies
+3. Survival analaysis (Objective 1)
+4. Set ups the school cohort (linked health-education data)
+5. Calculated the prevalence of recorded SEN provision and
+The datasets and variables used are defined at the top of each do file
 ## Software
 This code was developed using Stata v17. Analyses was conducted within the Office for National Statistics Secure Research Service (ONS SRS).
 ## Data sources
