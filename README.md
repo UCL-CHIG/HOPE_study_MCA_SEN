@@ -2,9 +2,9 @@
 ## Aim and objectives of this study
 Using a national cohort of births in England between 2003 and 2013, we aimed to describe patterns of survival to the start of compulsory education and frequencies of recorded SEN provision across children with and without a broad range of major congenital anomalies identified in hospital and mortality records.
 
-   Objective 1: rates of survival up to the age 5 and 7 years  
-   Objective 2: the prevalence of recorded SEN provision between years 1 and 6 of those attending a state-funded school  
-   Objective 3: differences in the prevalence of recorded SEN provision in year 1 between children attending state-funded school before and after the 2014 SEN reforms  
+   Objective 1: To estimate rates of survival up to the age of 5 and 7 years in children with and without a range of MCAs
+   Objective 2: To estimate the prevalence of recorded SEN provision between years 1 and 6 of those attending a state-funded school  
+   Objective 3: To estimate the difference in the prevalence of recorded SEN provision in year 1 between children before and after the 2014 SEN reforms  
 ## Scripts
 This repository contains 6 scripts:
 1. Sets up the birth cohort 
@@ -12,9 +12,9 @@ This repository contains 6 scripts:
 3. Survival analaysis (*objective 1*)
 4. Set ups the school cohort (linked health-education data)
 5. Estimates the prevalence of recorded SEN provision during years 1 to 6 (*objective 2*)
-6. Estmiates the difference in the prevalence of recorded SEN provision in year 1 before and after the 2014 SEN reforms (*objective 3*)
+6. Estimates the difference in the prevalence of recorded SEN provision in year 1 before and after the 2014 SEN reforms (*objective 3*)
 
-The datasets and variables used in each script are defined at the top of each do file.
+The datasets and variables used are defined at the top of each script.
 ## Software
 This code was developed using Stata v17. Analyses was conducted within the Office for National Statistics Secure Research Service (ONS SRS).
 ## Data sources
