@@ -1,15 +1,16 @@
 *****************************************************************************
-*               DO FILE 2. DEFINE MCAS USING ICD-10 CODES                   *
+*               DO FILE 2. DEFINE MCAS USING ICD-10 CODES 	   *
 *****************************************************************************
-/*
-This code uses the following datasets:
-- 
-- 
-With the following variables:
--
--
-*/
 
+*# DATASETS AND VARIABLES
+
+/* This code uses the following datasets and variables:
+1.	HES APC 
+	a.	gestat_baby = gestational age (from baby tail of birth record)
+	b.	diag = diagnoses (any diagnoses up to the age of 1 year)
+2.	Linked to ONS mortality records
+	a.	cause = cause of death (in deaths before 1 year)
+*/
 
 ********************************************************************************
 *                      NERVOUS SYSTEM ANOMALIES                                * 
