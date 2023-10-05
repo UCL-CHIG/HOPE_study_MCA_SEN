@@ -8,12 +8,12 @@ capture log close
 capture macro drop _all
 
 **set up filepaths
-global data 
-global dofiles 
-global logfiles 
-global savefiles
-global temp 
-global results 
+global data [add_filepath]
+global dofiles [add_filepath]
+global logfiles [add_filepath]
+global savefiles [add_filepath]
+global temp [add_filepath]
+global results [add_filepath]
 
 *check directory
 dir
@@ -71,7 +71,9 @@ drop if dob<mdy(09,01,2003) | dob>mdy(08,31,2013)
 save "$temp\babytail_dates.dta", replace
 clear
 
+*****************************************************************************
 *# DEFINE MCAS FIRST IN SEPERATE DO FILE
+*****************************************************************************
 do "$dofiles\01b_Define_MCAs.do"
 clear
 
