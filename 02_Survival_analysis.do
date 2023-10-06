@@ -1,17 +1,16 @@
 *****************************************************************************
-*         DO FILE 3. CALCULATE SURVIVAL AT 5 and 7	         *
+*         CALCULATE SURVIVAL AT 5 and 7	         *
 * by MCAs (with at least 200 cases) using the Kaplan Meier survivor function
 *****************************************************************************
 
-*Use data file containing all infants born in the study period (the birth cohort explained in do file 1)
-*Surival analyses is conducted by MCA (see do file 2 for definitions)
+*Use data file containing all infants born in the study period
+*Survival analyses is conducted by MCA (see do file 2 for definitions)
 *This includes EVERYONE even if they did not go on to get linked to NPD
 
-*# DATASETS AND VARIABLES
-
+*# DATASETS 
 /* This code uses the following datasets:
-1.	HES APC birth records, including MCAs created in do file 2
-2.	Linked to HES/ ONS mortality records, including approximate date of death created in do file 1
+1.	HES APC birth records and readmissions
+2.	Linked to HES/ ONS mortality records
 */
 
 ********************************************************************************
