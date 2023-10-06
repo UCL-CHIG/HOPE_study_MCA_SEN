@@ -1,5 +1,5 @@
 ******************************************************************************
-* COMPARISON OF SEN PROVISION IN YEAR 1, BY BIRTH YEAR GROUPS
+* DO 6. COMPARISON OF SEN PROVISION IN YEAR 1, BY BIRTH YEAR GROUPS
 ******************************************************************************
 use "sub_cohort_all_school_years.dta", clear
 label define sen 0 "None" 1 "SEN support" 2 "EHCP" 3 "Specialist school" ,replace
