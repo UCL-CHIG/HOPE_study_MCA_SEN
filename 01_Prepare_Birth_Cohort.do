@@ -30,8 +30,9 @@ generate non_res=.
 replace non_res=1 if resgor=="S" | resgor=="W" | resgor=="X" | resgor=="Z"
 drop if non_res==1
 
-*create approximate date of death 
-
+*create approximate date of death (as we don't have day of death)
+gen dod=date(dod_year,  // Make dod occur 1 day after date of birth admissions if dod same or earlier than dob_adm
+format %td dod_adj
 
 *# SAVE FILE
 save "birth_cohort.dta", replace
