@@ -1,90 +1,7 @@
-********************************************************************************
-* Create tables with sum of SEN records across KS1 and KS2
-* Also need the number eligible (totals)
-********************************************************************************
-
-*### housekeeping ###*
-clear all
-capture log close
-capture macro drop _all
-
-**set up filepaths
-global data 
-global dofiles 
-global logfiles 
-global savefiles
-global temp 
-global results 
-
-*check directory
-dir
-
-*log output
-capture log close
-log using "$logfiles\Do_06_Table2_$S_DATE.log", replace
-
-******************************************************************************
-*ALL ELIGIBLE, Key stage 1 and Key stage 2 results
-******************************************************************************
-*Reformat SEN data for final tables
-use "$savefiles\sub_cohort_all_school_years.dta", clear
-label define sen 0 "None" 1 "SEN support" 2 "EHCP" 3 "Specialist school" ,replace
-label val sen_record sen
-tab sen_record, m
-
-*Gen key stages
-gen key_stage=.
-replace key_stage=1 if (schoolyear==1 | schoolyear==2)
-replace key_stage=2 if (schoolyear==3 | schoolyear==4 | schoolyear==5 | schoolyear==6)
-bysort pupilmatchingrefanonymous key_stage: egen sen_max=max(sen_record)
-
-/*sup  table looking at trend effects by cohort:key stages
-preserve
-gen count=1
-gen cohort=0
-replace cohort=1 if birthyr_academic>2005
-replace cohort=2 if birthyr_academic>2008
-tab birthyr_academic cohort
-collapse (sum) count, by (cohort key_stage sen_record school_type any_MCA)
-export excel using "$results\Sup_table_school_raw_MCA.xlsx",  firstrow(variables) sheet(supTable5, replace) 
-restore
-*/
-
-keep pupilmatchingrefanonymous key_stage sen_max no_MCA any_MCA nerv_all iso_nerv nerv_microceph nerv_hydroceph nerv_bifida eye_all iso_eye eye_anomicro eye_cataract eye_glaucoma efn_all iso_efn heart_all iso_heart heart_severe resp_all iso_resp resp_choanal oro_all iso_oro oro_lip oro_pal oro_both dig_all iso_dig dig_oatresia dig_intestinal dig_hirsch dig_batresia dig_cdh_full dig_arm_full abdo_all iso_abdo abdo_omphal abdo_gastro urin_all iso_urin urin_exstrophy genital_all iso_genital genital_hypospadia genital_indsex limb_all iso_limb limb_reduct chrom_all iso_chrom chrom_21 chrom_turn
-
-duplicates drop
-
-order pupilmatchingrefanonymous key_stage sen_max no_MCA any_MCA nerv_all iso_nerv nerv_microceph nerv_hydroceph nerv_bifida eye_all iso_eye eye_anomicro eye_cataract eye_glaucoma efn_all iso_efn heart_all iso_heart heart_severe resp_all iso_resp resp_choanal oro_all iso_oro oro_lip oro_pal oro_both dig_all iso_dig dig_oatresia dig_intestinal dig_hirsch dig_batresia dig_cdh_full dig_arm_full abdo_all iso_abdo abdo_omphal abdo_gastro urin_all iso_urin urin_exstrophy genital_all iso_genital genital_hypospadia genital_indsex limb_all iso_limb limb_reduct chrom_all iso_chrom chrom_21 chrom_turn
-
-*count ks1
-preserve
-keep if key_stage==1
-count
-collapse (sum) no_MCA any_MCA nerv_all iso_nerv nerv_microceph nerv_hydroceph nerv_bifida eye_all iso_eye eye_anomicro eye_cataract eye_glaucoma efn_all iso_efn heart_all iso_heart heart_severe resp_all iso_resp resp_choanal oro_all iso_oro oro_lip oro_pal oro_both dig_all iso_dig dig_oatresia dig_intestinal dig_hirsch dig_batresia dig_cdh_full dig_arm_full abdo_all iso_abdo abdo_omphal abdo_gastro urin_all iso_urin urin_exstrophy genital_all iso_genital genital_hypospadia genital_indsex limb_all iso_limb limb_reduct chrom_all iso_chrom chrom_21 chrom_turn, by(sen_max)
-export excel using "$results\Table 2_raw.xlsx", firstrow(variables) sheet(ks1_sen) replace
-restore
-
-*count ks2
-preserve
-keep if key_stage==2
-collapse (sum) no_MCA any_MCA nerv_all iso_nerv nerv_microceph nerv_hydroceph nerv_bifida eye_all iso_eye eye_anomicro eye_cataract eye_glaucoma efn_all iso_efn heart_all iso_heart heart_severe resp_all iso_resp resp_choanal oro_all iso_oro oro_lip oro_pal oro_both dig_all iso_dig dig_oatresia dig_intestinal dig_hirsch dig_batresia dig_cdh_full dig_arm_full abdo_all iso_abdo abdo_omphal abdo_gastro urin_all iso_urin urin_exstrophy genital_all iso_genital genital_hypospadia genital_indsex limb_all iso_limb limb_reduct chrom_all iso_chrom chrom_21 chrom_turn, by(sen_max)
-export excel using "$results\Table 2_raw.xlsx", firstrow(variables) sheet(ks2_sen, replace) 
-restore
-
-*count ks1 or ks2
-preserve
-bysort pupilmatchingrefanonymous (sen_max):  keep if _n==_N
-drop key_stage
-collapse (sum) no_MCA any_MCA nerv_all iso_nerv nerv_microceph nerv_hydroceph nerv_bifida eye_all iso_eye eye_anomicro eye_cataract eye_glaucoma efn_all iso_efn heart_all iso_heart heart_severe resp_all iso_resp resp_choanal oro_all iso_oro oro_lip oro_pal oro_both dig_all iso_dig dig_oatresia dig_intestinal dig_hirsch dig_batresia dig_cdh_full dig_arm_full abdo_all iso_abdo abdo_omphal abdo_gastro urin_all iso_urin urin_exstrophy genital_all iso_genital genital_hypospadia genital_indsex limb_all iso_limb limb_reduct chrom_all iso_chrom chrom_21 chrom_turn, by(sen_max)
-export excel using "$results\Table 2_raw.xlsx", firstrow(variables) sheet(ks1_ks2_sen, replace) 
-restore
-
-
-
 ******************************************************************************
 * COMPARISON OF SEN PROVISION IN YEAR 1, BY BIRTH YEAR GROUPS
 ******************************************************************************
-use "$savefiles\sub_cohort_all_school_years.dta", clear
+use "sub_cohort_all_school_years.dta", clear
 label define sen 0 "None" 1 "SEN support" 2 "EHCP" 3 "Specialist school" ,replace
 label val sen_record sen
 tab sen_record, m
@@ -123,7 +40,7 @@ gen count=1 if _n<3
 tab count
 local N = r(N)
 cs var_case reform_period if no_MCA==1, level(99)
-putexcel set "$results\Table 3_raw_99.xlsx", sheet(rd_anySEN) modify
+putexcel set "Dif_table_99.xlsx", sheet(rd_anySEN) modify
        putexcel A1 = "MCA_group"
 	   putexcel B1 = "r(afe)"
 	   putexcel C1 = "r(lb_afe)"
@@ -163,7 +80,7 @@ foreach var of varlist any_MCA nerv_all iso_nerv nerv_microceph nerv_hydroceph n
 	tab count
 	local N = r(N)
 	cs var_case reform_period if `var'==1, level(99)
-	putexcel set "$results\Table 3_raw_99.xlsx", sheet(rd_anySEN) modify
+	putexcel set "Dif_table_99.xlsx", sheet(rd_anySEN) modify
 	
 	   foreach k of local N{
 	   putexcel A`k' = "`var'"   
@@ -194,7 +111,7 @@ gen count=1 if _n<3
 tab count
 local N = r(N)
 cs var_case reform_period if no_MCA==1, level(99)
-putexcel set "$results\Table 3_raw_99.xlsx", sheet(rd_lowSEN) modify
+putexcel set "Dif_table_99.xlsx", sheet(rd_lowSEN) modify
        putexcel A1 = "MCA_group"
 	   putexcel B1 = "r(afe)"
 	   putexcel C1 = "r(lb_afe)"
@@ -234,7 +151,7 @@ foreach var of varlist any_MCA nerv_all iso_nerv nerv_microceph nerv_hydroceph n
 	tab count
 	local N = r(N)
 	cs var_case reform_period if `var'==1, level(99)
-	putexcel set "$results\Table 3_raw_99.xlsx", sheet(rd_lowSEN) modify
+	putexcel set "Dif_table_99.xlsx", sheet(rd_lowSEN) modify
 	
 	   foreach k of local N{
 	   putexcel A`k' = "`var'"   
@@ -266,7 +183,7 @@ gen count=1 if _n<3
 tab count
 local N = r(N)
 cs var_case reform_period if no_MCA==1, level(99)
-putexcel set "$results\Table 3_raw_99.xlsx", sheet(rd_highSEN) modify
+putexcel set "Dif_table_99.xlsx", sheet(rd_highSEN) modify
        putexcel A1 = "MCA_group"
 	   putexcel B1 = "r(afe)"
 	   putexcel C1 = "r(lb_afe)"
@@ -306,7 +223,7 @@ foreach var of varlist any_MCA nerv_all iso_nerv nerv_microceph nerv_hydroceph n
 	tab count
 	local N = r(N)
 	cs var_case reform_period if `var'==1, level(99)
-	putexcel set "$results\Table 3_raw_99.xlsx", sheet(rd_highSEN) modify
+	putexcel set "Dif_table_99.xlsx", sheet(rd_highSEN) modify
 	
 	   foreach k of local N{
 	   putexcel A`k' = "`var'"   
@@ -337,7 +254,7 @@ gen count=1 if _n<3
 tab count
 local N = r(N)
 cs var_case reform_period if no_MCA==1, level(99)
-putexcel set "$results\Table 3_raw_99.xlsx", sheet(rd_highSEN_spec) modify
+putexcel set "Dif_table_99.xlsx", sheet(rd_highSEN_spec) modify
        putexcel A1 = "MCA_group"
 	   putexcel B1 = "r(afe)"
 	   putexcel C1 = "r(lb_afe)"
@@ -377,7 +294,7 @@ foreach var of varlist any_MCA nerv_all iso_nerv nerv_microceph nerv_hydroceph n
 	tab count
 	local N = r(N)
 	cs var_case reform_period if `var'==1, level(99)
-	putexcel set "$results\Table 3_raw_99.xlsx", sheet(rd_highSEN_spec) modify
+	putexcel set "Dif_table_99.xlsx", sheet(rd_highSEN_spec) modify
 	
 	   foreach k of local N{
 	   putexcel A`k' = "`var'"   
@@ -400,33 +317,10 @@ restore
 
 ********************************************************************************
 *time series of SEN by MCA/Non-MCA
-********************************************************************************
-
-*### housekeeping ###*
-clear all
-capture log close
-capture macro drop _all
-
-**set up filepaths
-global data 
-global dofiles 
-global logfiles 
-global savefiles
-global temp 
-global results 
-
-*check directory
-dir
-
-*log output
-capture log close
-log using "$logfiles\Do_06b_Table2_$S_DATE.log", replace
-
-******************************************************************************
 *ALL ELIGIBLE, Year 1 only
 ******************************************************************************
 *Reformat SEN data for final tables
-use "$savefiles\sub_cohort_all_school_years.dta", clear
+use "sub_cohort_all_school_years.dta", clear
 label define sen 0 "None" 1 "SEN support" 2 "EHCP" 3 "Specialist school",replace
 label val sen_record sen
 tab sen_record, m
