@@ -2,10 +2,6 @@
 *                    DO FILE 1. PREPARE BIRTH COHORT                   *
 *****************************************************************************
 
-*The birth admissions file used below is created using code written by Ania Zylbersztejn et al.
-*See paper: https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0243843 
-*And see accompanying code: https://github.com/UCL-CHIG/HES-birth-cohorts/
-
 *# DATASETS AND VARIABLES
 
 /* This code uses the following datasets and variables:
@@ -18,8 +14,13 @@
       b.	dod_month = month of death
 */
 
-*open HES APC birth file merged with HES/ONS mortality data
-use [file_name]
+*Open HES APC birth file and merge with HES/ONS mortality data
+*The birth admissions file used below is created using code written by Ania Zylbersztejn et al.
+*See paper: https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0243843 
+*And see accompanying code: https://github.com/UCL-CHIG/HES-birth-cohorts/
+
+use "birth_cohort_original.dta", clear
+merge 1:1 encrypted_hesid using "mortality_data.dta"
 
 *# ADD STUDY SPECIFIC EXCLUSIONS
 *drop those outside cohort birth dates
