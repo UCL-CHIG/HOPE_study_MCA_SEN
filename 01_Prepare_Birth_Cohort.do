@@ -19,9 +19,6 @@
 *See paper: https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0243843 
 *And see accompanying code: https://github.com/UCL-CHIG/HES-birth-cohorts/
 
-use "birth_cohort_original.dta", clear
-merge 1:1 encrypted_hesid using "mortality_data.dta"
-
 *# ADD STUDY SPECIFIC EXCLUSIONS
 *drop those outside cohort birth dates
 drop if dob_adm<mdy(09,01,2003) | dob_adm>mdy(08,31,2013)
@@ -38,6 +35,3 @@ drop if non_res==1
 gen dod=mdy(dod_month,15,dod_year) 
 replace dod=(dob_adm+1) if (dod-dob_adm)<1 // Make dod occur 1 day after date of birth admissions if dod same or earlier than dob_adm
 format %td dod
-
-*# SAVE FILE
-save "birth_cohort.dta", replace
