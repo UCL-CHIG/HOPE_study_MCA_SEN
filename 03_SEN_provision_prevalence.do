@@ -1,11 +1,11 @@
 ********************************************************************************
-* DO 5. SEN PROVISION PREVALENCE
+* DO. SEN PROVISION PREVALENCE
 ********************************************************************************
 
 ********************************************************************************
 * Create tables with sum of SEN records across KS1 and KS2
 * Also need the number eligible (totals)
-* Use this to create proportions of 
+* Use this to create proportions of SEN provision by MCA
 ********************************************************************************
 
 ********************************************************************************
