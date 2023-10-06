@@ -5,38 +5,63 @@
 *# DATASETS AND VARIABLES
 
 /* This code uses the following datasets and variables:
-1.	NPD AP PRU and termly school censuses
-a.	PMR
-b.	
+1.	GIAS data
+2. 	NPD AP PRU and termly school censuses
+	a.	PMR = pupilmatchingrefanonymous (NPD pseudanonymised id)
+	b.	schoolyear = NCyear 
+	c.	SENprovision = SEN provision
+	d.	academicyear = as reported in each census
 2.	Linked to the HES cohort defined in do file 1
 */
 /**************************************************************************
 
-	rename Pupil pupilmatchingrefanonymous
-	rename NCyear schoolyear
-	rename SENprovision_ sen_provision
-	rename AcademicYear_SPR`x' academicyear
-
-rename PRU_* *
-	rename Pupil pupilmatchingrefanonymous
-	rename SENprovision sen_provision
-	rename SENprovisionMajor sen_provision_maj
-	rename PrimarySEN sen_primary
-	rename SecondarySEN sen_secondary
-	rename NC schoolyear
-	rename AcademicYear academicyear
-
-
-****************************************************************************/
-*Import NPD HES Linkage Spine (One to One)
-import delimited "$data\NPD_HES_Linkage_Spine.csv", varnames(1) 
-save "$temp\hes_npd_spine.dta", replace
+****************************************************************************
+* OPEN GIAS DATA AND CREATE SCHOOL TYPE VARIABLE		   *
+****************************************************************************
+import delimited "GIAS\DR200604.02B_public_data_gias_data_25102021_20220614.csv"
+keep urn establishmenttypegroupcode typeofestablishmentcode typeofestablishmentname establishmenttypegroupname lastchangeddate
+gen school_type=0
+replace school_type=1 if typeofestablishmentcode==14 | typeofestablishmentcode==24 | typeofestablishmentcode==38 | typeofestablishmentcode==42 | typeofestablishmentcode==43 
+replace school_type=2 if typeofestablishmentcode==7 | typeofestablishmentcode==8 | ///
+		typeofestablishmentcode==10 | typeofestablishmentcode==12 | ///
+		typeofestablishmentcode==32 | typeofestablishmentcode==33 | ///
+		typeofestablishmentcode==36 | typeofestablishmentcode==44   
+replace school_type=-1 if typeofestablishmentcode==26 | typeofestablishmentcode==27 | ///
+		typeofestablishmentcode==41 | typeofestablishmentcode==56 
+label define school -1 "unknown" 0 "mainstream" 1 "AP" 2 "special" 
+label values school_type school
+keep urn school_type 
+duplicates drop
+save "GIAS_data_temp.dta", replace
 clear
- 
+
 ****************************************************************************
-* Open birth and finalise cohort		        *
+*Open HES APC birth file merged with HES/ONS mortality data (as in do file 1)
+*Merged with children in the NPD censuses
 ****************************************************************************
-Use [merged dataset]
+*just need years in the study
+drop if substr(academicyear,1,4)=="2001" | substr(academicyear,1,4)=="2002" | substr(academicyear,1,4)=="2003" | ///
+ substr(academicyear,1,4)=="2004" | substr(academicyear,1,4)=="2005" | substr(academicyear,1,4)=="2006" | ///
+ substr(academicyear,1,4)=="2007" |  substr(academicyear,1,4)=="2019" 
+duplicates drop
+
+*put different school types within same academic year in another column
+duplicates tag pupilmatchingrefanonymous academicyear, gen(tag)
+tab tag
+drop tag
+
+*keep highest school type within a year
+bysort pupilmatchingrefanonymous academicyear (school_type): keep if _n==_N
+
+*keep pupils from birth cohort only
+merge m:1 pupilmatchingrefanonymous using "$savefiles\BirthCohort_PMRs.dta", keep(match)
+drop _merge
+
+save "GIAS\all_schools_temporary.dta", replace
+clear
+
+
+
 
 *Generate end of follow up for deaths up to start of KS1
 *Need to first convert dob_adm to birth year according to the academic year - NOT calendar year
@@ -58,61 +83,6 @@ drop if PMR==""
 keep PMR
 duplicates drop 
 
-*resave new cohort
-Save “cohort2.dta”
-
-	
-	merge m:1 pupilmatch using "$savefiles\BirthCohort_PMRs.dta", keep(match)
-	drop _m
-	duplicates drop
-	gen pru_census=1
-save "$temp\bc_sen_pru_1013.dta", replace
-clear
-
-****************************************************************************
-* OPEN GIAS DATA AND LINK ON URNS		   *
-****************************************************************************
-import delimited "GIAS\DR200604.02B_public_data_gias_data_25102021_20220614.csv"
-keep urn establishmenttypegroupcode typeofestablishmentcode typeofestablishmentname establishmenttypegroupname lastchangeddate
-
-gen school_type=0
-replace school_type=1 if typeofestablishmentcode==14 | typeofestablishmentcode==24 | typeofestablishmentcode==38 | typeofestablishmentcode==42 | typeofestablishmentcode==43 
-replace school_type=2 if typeofestablishmentcode==7 | typeofestablishmentcode==8 | ///
-		typeofestablishmentcode==10 | typeofestablishmentcode==12 | ///
-		typeofestablishmentcode==32 | typeofestablishmentcode==33 | ///
-		typeofestablishmentcode==36 | typeofestablishmentcode==44   
-replace school_type=-1 if typeofestablishmentcode==26 | typeofestablishmentcode==27 | ///
-		typeofestablishmentcode==41 | typeofestablishmentcode==56 
-label define school -1 "unknown" 0 "mainstream" 1 "AP" 2 "special" 
-label values school_type school
-
-keep urn school_type 
-
-duplicates drop
-save "GIAS_data_temp.dta", replace
-clear
-
-
-*just need years in the study
-drop if substr(academicyear,1,4)=="2001" | substr(academicyear,1,4)=="2002" | substr(academicyear,1,4)=="2003" | ///
- substr(academicyear,1,4)=="2004" | substr(academicyear,1,4)=="2005" | substr(academicyear,1,4)=="2006" | ///
- substr(academicyear,1,4)=="2007" |  substr(academicyear,1,4)=="2019" 
-duplicates drop
-
-*put different school types within same academic year in another column
-duplicates tag pupilmatchingrefanonymous academicyear, gen(tag)
-tab tag
-drop tag
-
-*keep highest school type within a year
-bysort pupilmatchingrefanonymous academicyear (school_type): keep if _n==_N
-
-*keep pupils from birth cohort only
-merge m:1 pupilmatchingrefanonymous using "$savefiles\BirthCohort_PMRs.dta", keep(match)
-drop _merge
-
-save "GIAS\all_schools_temporary.dta", replace
-clear
 
 
 ***************************************************************************
