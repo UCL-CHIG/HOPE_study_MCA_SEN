@@ -3,7 +3,8 @@
 * by MCAs (with at least 200 cases) using the Kaplan Meier survivor function
 *****************************************************************************
 
-*Use data file containing all infants born in the study period (the birth cohort)
+*Use data file containing all infants born in the study period (the birth cohort explained in do file 1)
+*Surival analyses is conducted by MCA (see do file 2 for definitions)
 *This includes EVERYONE even if they did not go on to get linked to NPD
 
 *# DATASETS AND VARIABLES
@@ -14,10 +15,6 @@
 */
 
 ********************************************************************************
-
-*open file created in do files 1 & 2
-use [open file]
-
 *** create follow up to age 5 and 7 years
 gen death=0
 replace death=1 if dod!=. & (dod-date0)<(5*365.25) //follow up for deaths up to start of KS1
