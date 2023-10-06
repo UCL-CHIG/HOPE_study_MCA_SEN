@@ -2,9 +2,7 @@
 *               DO FILE 2. DEFINE MCAS USING ICD-10 CODES 	   *
 *****************************************************************************
 
-*# DATASETS AND VARIABLES
-
-* This file is applied to children in the birth cohort created in do file 1 to create indicators of MCAs
+* Code to apply to HES APC and ONS mortality records
 * Mostly defined using the EUROCAT guidelines: see https://eu-rd-platform.jrc.ec.europa.eu/system/files/public/eurocat/Guide_1.5_Chapter_3.3.pdf 
 * All diagnoses in HES APC admissions up to one year of age are used (i.e startage>7000)
 * All causes of death in mortality records up to one year of age are used appended
