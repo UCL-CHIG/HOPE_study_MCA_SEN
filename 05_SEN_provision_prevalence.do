@@ -8,11 +8,52 @@
 * Use this to create proportions of 
 ********************************************************************************
 
+********************************************************************************
+* PREPARE SEN DATA
+********************************************************************************
+*Create labelled sen_provision variable
+	*N - None
+	*A - School Action
+	*P - School Action Plus
+	*K - SEN Support
+	*S - Statement
+	*E or e - EHCP
+gen sen_record=.
+replace sen_record=0 if sen_provision=="N"
+replace sen_record=1 if sen_provision=="A"
+replace sen_record=2 if sen_provision=="P"
+replace sen_record=3 if sen_provision=="K"
+replace sen_record=4 if sen_provision=="S"
+replace sen_record=5 if sen_provision=="E"
+replace sen_record=5 if sen_provision=="e"
+replace sen_record=0 if sen_provision==""
+label define sen 0 "None" 1 "SchoolAction" 2 "SchoolAction+" 3 "SENsupport" 4 "Statement" 5 "EHCP"
+label val sen_record sen
+tab sen_record sen_provision, m
+drop sen_provision
+
+*Create sen variable with 4 levels
+gen sen_record_4=.
+replace sen_record_4=0 if sen_record==0
+replace sen_record_4=1 if sen_record>0 & sen_record<4
+replace sen_record_4=2 if sen_record>=4
+replace sen_record_4=3 if school_type==1 | school_type==2
+label define sensum 0 "None" 1 "SEN support" 2 "EHCP" 3 "specialist school", replace
+label val sen_record_4 sensum
+tab sen_record sen_record_4, m
+order pupilmatchingrefanonymous academic_year sen_record sen_record_4
+
+*keep only highest evidence per academic year
+bysort pupilmatchingrefanonymous academic_year: egen maxsen_academicyr=max(sen_record_4)
+label val maxsen sensum
+
+rename maxsen_academicyr sen_record
+duplicates drop
+
 ******************************************************************************
 *ALL ELIGIBLE, Key stage 1 and Key stage 2 results
 ******************************************************************************
 *Reformat SEN data for final tables
-use "cohort_all_school_years.dta", clear
 label define sen 0 "None" 1 "SEN support" 2 "EHCP" 3 "Specialist school" ,replace
 label val sen_record sen
 tab sen_record, m
