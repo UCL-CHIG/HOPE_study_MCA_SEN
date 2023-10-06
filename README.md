@@ -32,6 +32,7 @@ This work uses the following datasets within [Education and Child Health Insight
 ## Data access
 The ECHILD database is made available for free for approved research based in the UK, via the office for National Statistics (ONS) Secure Research Service. Enquiries to access the ECHILD database can be made by emailing ich.echild@ucl.ac.uk. Researchers will need to be approved and submit a successful application to the ECHILD Data Access Committee and ONS Research Accreditation Panel to access the data, with strict statistical disclosure controls of all outputs of analyses.
 ## Useful references
+* EUROCAT. EUROCAT Guide 1.5: Chapter 3.3 EUROCAT Subgroups of Congenital Anomalies. 2022 [cited 18 Jul 2022]. Available: https://eu-rd-platform.jrc.ec.europa.eu/system/files/public/eurocat/Guide_1.5_Chapter_3.3.pdf
 * Ford K, Peppa M, Zylbersztejn A, Curry JI, Gilbert R. Birth prevalence of anorectal malformations in England and 5-year survival: a national birth cohort study. Arch Dis Child. 2022;107: 758. doi:10.1136/archdischild-2021-323474
 * Herbert A, Wijlaars L, Zylbersztejn A, Cromwell D, Hardelid P. Data Resource Profile: Hospital Episode Statistics Admitted Patient Care (HES APC). Int J Epidemiol. 2017;46: 1093–1093i. doi:10.1093/ije/dyx015
 * Mc Grath-Lone L, Libuy N, Harron K, Jay MA, Wijlaars L, Etoori D, et al. Data Resource Profile: The Education and Child Health Insights from Linked Data (ECHILD) Database. Int J Epidemiol. 2022;51: 17–17f. doi:10.1093/ije/dyab149
