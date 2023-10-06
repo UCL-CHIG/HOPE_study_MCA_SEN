@@ -6,13 +6,11 @@ Using a national cohort of births in England between 2003 and 2013, we aimed to 
    Objective 2: To estimate the prevalence of recorded SEN provision between years 1 and 6 for children with and without a range of MCAs  
    Objective 3: To estimate the difference in the prevalence of recorded SEN provision in year 1 between children before and after the 2014 SEN reforms for children with and without a range of MCAs
 ## Scripts
-This repository contains 6 Stata scripts (do files):  
-- 01_Prepare_birth_cohort  
-- 02_Define_MCAs  
-- 03_Survival_analysis (*objective 1*)  
-- 04_Prepare_school_cohort  
-- 05_SEN_provision_prevalence (*objective 2*)  
-- 06_SEN_reform_difference (*objective 3*)  
+This repository contains 4 Stata scripts (do files) 
+- 01_Define_MCAs  
+- 02_Survival_analysis (*objective 1*)  
+- 03_SEN_provision_prevalence (*objective 2*)  
+- 04_SEN_reform_difference (*objective 3*)  
 
 The datasets and variables used are defined within each script.
 ## Software
