@@ -4,13 +4,11 @@
 
 *# DATASETS AND VARIABLES
 
-/* This code uses the following datasets and variables:
-1.	HES APC 
-	a.	gestat_baby = gestational age (from baby tail of birth record)
-	b.	diag = diagnoses (any diagnoses up to the age of 1 year)
-2.	Linked to HES/ ONS mortality records
-	a.	cause = cause of death (in deaths before 1 year)
-*/
+* This file is applied to children in the birth cohort created in do file 1 to create indicators of MCAs
+* Mostly defined using the EUROCAT guidelines: see https://eu-rd-platform.jrc.ec.europa.eu/system/files/public/eurocat/Guide_1.5_Chapter_3.3.pdf 
+* All diagnoses in HES APC admissions up to one year of age are used (i.e startage>7000)
+* All causes of death in mortality records up to one year of age are used appended
+* file with one row per child created
 
 ********************************************************************************
 *                      NERVOUS SYSTEM ANOMALIES                                * 
