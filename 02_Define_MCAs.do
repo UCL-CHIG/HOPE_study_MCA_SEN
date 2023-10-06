@@ -8,7 +8,7 @@
 1.	HES APC 
 	a.	gestat_baby = gestational age (from baby tail of birth record)
 	b.	diag = diagnoses (any diagnoses up to the age of 1 year)
-2.	Linked to ONS mortality records
+2.	Linked to HES/ ONS mortality records
 	a.	cause = cause of death (in deaths before 1 year)
 */
 
