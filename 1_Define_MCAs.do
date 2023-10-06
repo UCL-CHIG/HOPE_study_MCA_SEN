@@ -1,5 +1,5 @@
 *****************************************************************************
-*               DO FILE 2. DEFINE MCAS USING ICD-10 CODES 	   *
+*               DO FILE. DEFINE MCAS USING ICD-10 CODES 	   *
 *****************************************************************************
 
 * Code to apply to HES APC and ONS mortality records
