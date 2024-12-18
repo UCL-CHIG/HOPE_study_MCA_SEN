@@ -12,7 +12,6 @@ This repository contains 4 Stata scripts (do files)
 - SEN_provision_prevalence (*objective 2*)  
 - SEN_reform_difference (*objective 3*)  
 
-The datasets and variables used are defined within each script.
 ## Software
 This code was developed using Stata v17. Analyses was conducted within the Office for National Statistics Secure Research Service (ONS SRS).
 ## Data sources
